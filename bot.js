@@ -1,15 +1,17 @@
 const mineflayer = require('mineflayer');
 const pathfinder = require('mineflayer-pathfinder');  // Certifique-se de instalar esse pacote com npm install mineflayer-pathfinder
 const { Movements, GoalBlock, GoalNear } = require('mineflayer-pathfinder'); // Importando as funções necessárias
+const health = require('mineflayer/pluguins/health');
 
 const bot = mineflayer.createBot({
-  host: 'localhost',  // Endereço do servidor
+  host: 'scriptnza.falixsrv.me',  // Endereço do servidor
   port: 25565,        // Porta do servidor
-  username: 'bot',    // Nome de usuário
+  username: 'Darkness',    // Nome de usuário
   version: false      // Versão do Minecraft
 });
 
 bot.on('spawn', () => {
+  bot.loadPlugin(health);
   bot.loadPlugin(pathfinder);  // Carregando o plugin corretamente
 });
 
