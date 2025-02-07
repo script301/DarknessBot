@@ -1,7 +1,7 @@
 const mineflayer = require('mineflayer');
 const pathfinder = require('mineflayer-pathfinder');  // Certifique-se de instalar esse pacote com npm install mineflayer-pathfinder
 const { Movements, GoalBlock, GoalNear } = require('mineflayer-pathfinder'); // Importando as funções necessárias
-const health = require('mineflayer/pluguins/health');
+const health = require('mineflayer/plugins/health');
 
 const bot = mineflayer.createBot({
   host: 'scriptnza.falixsrv.me',  // Endereço do servidor
