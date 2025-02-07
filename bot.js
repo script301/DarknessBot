@@ -11,13 +11,12 @@ const bot = mineflayer.createBot({
 
 bot.on('spawn', () => {
   bot.loadPlugin(pathfinder);  // Carregando o plugin corretamente
-  console.log('Bot spawned!');
 });
   
 // Defina as configurações para as funções
 const functionsConfig = {
   autoMine: {
-    enabled: true, // Ative ou desative a mineração automática
+    enabled: false, // Ative ou desative a mineração automática
     // Adicione mais parâmetros de configuração para autoMine se necessário
   },
   sleepAtNight: true, // Ativar/desativar a função de dormir à noite
