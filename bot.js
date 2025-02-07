@@ -39,8 +39,6 @@ bot.on('spawn', () => {
       sendMessageToChat();
     }, functionsConfig.chatMessages.interval);
   }
-});
-
 function mineResources() {
   const minerals = functionsConfig.autoMine.minerals;
   const avoidLava = functionsConfig.autoMine.avoidLava;
