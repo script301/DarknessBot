@@ -84,7 +84,7 @@ function cutWood() {
       if (wood) {
         bot.dig(wood).then(() => {
           woodCount++;
-          console.log(Wood gathered: ${woodCount}/${maxWood});
+          console.log(`Wood gathered: ${woodCount}/${maxWood}`);
         });
       }
     }
