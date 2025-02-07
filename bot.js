@@ -1,6 +1,6 @@
 const mineflayer = require('mineflayer');
 const pathfinder = require('mineflayer-pathfinder');  // Certifique-se de instalar esse pacote com npm install mineflayer-pathfinder
-const { Movements, GoalBlock } = require('mineflayer-pathfinder'); // Importando as funções necessárias
+const { Movements, GoalBlock, GoalNear } = require('mineflayer-pathfinder'); // Importando as funções necessárias
 
 const bot = mineflayer.createBot({
   host: 'localhost',  // Endereço do servidor
@@ -12,12 +12,14 @@ const bot = mineflayer.createBot({
 bot.on('spawn', () => {
   bot.loadPlugin(pathfinder);  // Carregando o plugin corretamente
 });
-  
+
 // Defina as configurações para as funções
 const functionsConfig = {
   autoMine: {
     enabled: false, // Ative ou desative a mineração automática
-    // Adicione mais parâmetros de configuração para autoMine se necessário
+    minerals: ['diamond', 'iron_ore'], // Minerais a serem minerados
+    avoidLava: true, // Evitar lava
+    breakAndPlaceBlocks: false // Exemplo de ativar ou não colocar blocos após quebrar
   },
   sleepAtNight: true, // Ativar/desativar a função de dormir à noite
   chatMessages: {
@@ -49,7 +51,7 @@ if (functionsConfig.chatMessages.enabled) {
 
 // Verifique outras funções de configuração
 if (functionsConfig.autoMine.enabled) {
-  // Lógica de mineração automática
+  mineResources();
 }
 
 function mineResources() {
@@ -57,23 +59,24 @@ function mineResources() {
   const avoidLava = functionsConfig.autoMine.avoidLava;
   const breakAndPlaceBlocks = functionsConfig.autoMine.breakAndPlaceBlocks;
 
-  // Example of a mining loop for ores
+  // Exemplo de um loop de mineração para minérios
   setInterval(() => {
-    const targetMinerals = minerals.map(mineral => bot.findBlock({
-      matching: mineflayer.itemsByName[mineral].id,
-      maxDistance: 64
-    }));
-
-    if (targetMinerals.length > 0) {
-      const target = targetMinerals[0];
-      bot.pathfinder.setGoal(new GoalBlock(target.position.x, target.position.y, target.position.z));
-
-      bot.dig(target).then(() => {
-        if (breakAndPlaceBlocks) {
-          // Place a block if needed
-        }
+    minerals.forEach(mineral => {
+      const targetMineral = bot.findBlock({
+        matching: mineflayer.itemsByName[mineral].id,
+        maxDistance: 64
       });
-    }
+
+      if (targetMineral) {
+        bot.pathfinder.setGoal(new GoalBlock(targetMineral.position.x, targetMineral.position.y, targetMineral.position.z));
+
+        bot.dig(targetMineral).then(() => {
+          if (breakAndPlaceBlocks) {
+            // Colocar um bloco se necessário
+          }
+        });
+      }
+    });
   }, 10000);
 }
 
@@ -83,25 +86,23 @@ function cutWood() {
   const maxWood = functionsConfig.woodCutter.maxWood;
 
   setInterval(() => {
-    if (woodCount < maxWood) {
-      const wood = bot.findBlock({
-        matching: mineflayer.BlockID.LOG,
-        maxDistance: 64
-      });
+    const wood = bot.findBlock({
+      matching: 17, // ID do bloco de madeira (LOG)
+      maxDistance: 64
+    });
 
-      if (wood) {
-        bot.dig(wood).then(() => {
-          woodCount++;
-          console.log(`Wood gathered: ${woodCount}/${maxWood}`);
-        });
-      }
+    if (wood) {
+      bot.dig(wood).then(() => {
+        woodCount++;
+        console.log(`Wood gathered: ${woodCount}/${maxWood}`);
+      });
     }
   }, 5000);
 }
 
 function sleepAtNight() {
   const bed = bot.findBlock({
-    matching: mineflayer.BlockID.BED,
+    matching: 26, // ID do bloco de cama (BED)
     maxDistance: 64
   });
 
