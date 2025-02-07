@@ -1,3 +1,6 @@
+![photo_2025-02-07_01-35-35](https://github.com/user-attachments/assets/98bd0efd-f63b-431e-9b2d-6a493f038198)
+
+
 # DarknessBot - Bot Avançado para Servidores de Minecraft  
 
 ### 🔥 Disponível por apenas R$30! 🔥  
