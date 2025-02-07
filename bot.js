@@ -1,21 +1,18 @@
 const mineflayer = require('mineflayer');
-const pathfinder = require('mineflayer-pathfinder');
-const { GoalBlock } = require('mineflayer-pathfinder').goals;
-const fs = require('fs');
+const pathfinder = require('mineflayer-pathfinder');  // Certifique-se de instalar esse pacote com npm install mineflayer-pathfinder
+const { Movements, GoalBlock } = require('mineflayer-pathfinder'); // Importando as funções necessárias
 
-let bot = mineflayer.createBot({
-  host: 'scriptnza.falixsrv.me',
-  port: 25565,
-  username: 'DarknessBot',
-  auth: 'offline',
+const bot = mineflayer.createBot({
+  host: 'localhost',  // Endereço do servidor
+  port: 25565,        // Porta do servidor
+  username: 'bot',    // Nome de usuário
+  version: false      // Versão do Minecraft
 });
 
-const functionsConfig = JSON.parse(fs.readFileSync('./functionsConfig.json', 'utf8'));
-
-bot.loadPlugin(pathfinder);
-
 bot.on('spawn', () => {
+  bot.loadPlugin(pathfinder);  // Carregando o plugin corretamente
   console.log('Bot spawned!');
+});
   
   // Start mining if enabled in configuration
   if (functionsConfig.autoMine.enabled) {
