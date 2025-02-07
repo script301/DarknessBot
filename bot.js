@@ -14,31 +14,45 @@ bot.on('spawn', () => {
   console.log('Bot spawned!');
 });
   
-  // Start mining if enabled in configuration
-  if (functionsConfig.autoMine.enabled) {
-    mineResources();
+// Defina as configurações para as funções
+const functionsConfig = {
+  autoMine: {
+    enabled: true, // Ative ou desative a mineração automática
+    // Adicione mais parâmetros de configuração para autoMine se necessário
+  },
+  sleepAtNight: true, // Ativar/desativar a função de dormir à noite
+  chatMessages: {
+    enabled: true, // Ativar/desativar envio de mensagens no chat
+    interval: 600000, // Intervalo em milissegundos (10 minutos)
+    messages: [
+      "Olá, estou aqui!",
+      "Cuidando do meu mundo!",
+      "Me sigam no @SCRIPT_NZA_OFC!"
+    ]
   }
-  
-  // Start woodcutting if enabled in configuration
-  if (functionsConfig.woodCutter.enabled) {
-    cutWood();
-  }
-  
-  // Sleep during the night if enabled
-  if (functionsConfig.sleepAtNight) {
-    bot.on('time', (time) => {
-      if (time >= 13000 && time <= 23500) {
-        sleepAtNight();
-      }
-    });
-  }
+};
 
-  // Chat messages every interval if enabled
-  if (functionsConfig.chatMessages.enabled) {
-    setInterval(() => {
-      sendMessageToChat();
-    }, functionsConfig.chatMessages.interval);
-  }
+// Sleep during the night if enabled
+if (functionsConfig.sleepAtNight) {
+  bot.on('time', (time) => {
+    if (time >= 13000 && time <= 23500) {
+      sleepAtNight();
+    }
+  });
+}
+
+// Chat messages every interval if enabled
+if (functionsConfig.chatMessages.enabled) {
+  setInterval(() => {
+    sendMessageToChat();
+  }, functionsConfig.chatMessages.interval);
+}
+
+// Verifique outras funções de configuração
+if (functionsConfig.autoMine.enabled) {
+  // Lógica de mineração automática
+}
+
 function mineResources() {
   const minerals = functionsConfig.autoMine.minerals;
   const avoidLava = functionsConfig.autoMine.avoidLava;
