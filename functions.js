@@ -37,21 +37,36 @@ module.exports = {
         });
     },
 
-    // Função para dormir à noite
+    // Função para dormir à noite (corrigida)
     dormirANoite: (bot) => {
-        bot.on('time', () => {
-            if (bot.time.timeOfDay >= 13000 && bot.time.timeOfDay <= 23000) { // É noite
-                const bed = bot.findBlock({
-                    matching: (block) => block.name.includes('bed'),
-                    maxDistance: 5
-                });
+        bot.on('time', async () => {
+            try {
+                if (bot.time.timeOfDay >= 13000 && bot.time.timeOfDay <= 23000) { // Verifica se é noite
+                    if (!bot.entity) {
+                        console.log("🚫 O bot não está ativo para dormir.");
+                        return;
+                    }
 
-                if (bed) {
-                    bot.sleep(bed, (err) => {
-                        if (err) console.error('💤 Erro ao dormir:', err);
-                        else console.log("💤 Hora de dormir! Boa noite, mundo!");
+                    const bed = bot.findBlock({
+                        matching: (block) => block.name.includes('bed'),
+                        maxDistance: 5
                     });
+
+                    if (!bed) {
+                        console.log("❌ Nenhuma cama encontrada. O bot não pode dormir.");
+                        return;
+                    }
+
+                    if (bot.isSleeping) {
+                        console.log("💤 O bot já está dormindo.");
+                        return;
+                    }
+
+                    await bot.sleep(bed);
+                    console.log("💤 O bot foi dormir com sucesso!");
                 }
+            } catch (err) {
+                console.error("⚠️ Erro ao tentar dormir:", err.message);
             }
         });
     },
