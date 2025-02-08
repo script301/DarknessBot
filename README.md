@@ -1,6 +1,6 @@
  ![image](https://github.com/user-attachments/assets/088d6e95-49f6-4801-87d0-5c2808381905)
 
-## ✨ 🔥 DarknessBot - Seu Aliado Automático no Minecraft! 🔥 ✨
+## ✨ 🔥 DarknessBot - Seu Aliado Automático no Minecraft! (BETA) 🔥 ✨
 
 - 🎮 Cansado de perder horas no Minecraft só para manter o servidor online ou coletar recursos? Apresentamos o DarknessBot, o bot que faz tudo isso para você! 🚀
 
