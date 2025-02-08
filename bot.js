@@ -142,9 +142,6 @@ const iniciarBot = () => {
         if (config.funcoes.irParaCoordenadas) funcoes.irParaCoordenadas(bot, config);
         if (config.funcoes.enviarMensagensNoChat) funcoes.enviarMensagensNoChat(bot, config);
         if (config.funcoes.comerQuandoFaminto) funcoes.comerQuandoFaminto(bot);
-
-        // Desabilitando a interação com veículos
-        // if (config.funcoes.interagirComVeiculos) funcoes.interagirComVeiculos(bot);  // Deixe esse trecho comentado para desabilitar
     });
 
     // Evento para lidar com erros de conexão
