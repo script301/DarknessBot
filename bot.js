@@ -157,13 +157,23 @@ const iniciarBot = () => {
         }, 5000);
     });
 
-    // Adicionando verificações para evitar erro com veículos
+    // Escutar por novas entidades (e veículos)
     bot.on('entitySpawn', (entity) => {
         if (entity.type === 'vehicle' && !entity.passengers) {
-            console.warn('Tentativa de acessar veículo sem passageiros.');
+            // Ignorar veículo sem passageiros
+            console.log('🚗 Ignorando veículo sem passageiros.');
         }
+    });
+
+    // Adicionando uma verificação para prevenir erro com veículos
+    bot.on('spawn', () => {
+        bot.entities.forEach(entity => {
+            if (entity.type === 'vehicle' && !entity.passengers) {
+                console.log('🚗 Ignorando veículo sem passageiros.');
+            }
+        });
     });
 };
 
 mostrarMenu();
-                    
+        
