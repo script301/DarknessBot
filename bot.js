@@ -10,6 +10,8 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+if (config.funcoes.atacarMobs) funcoes.atacarMobsAoSerAtacado(bot);
+
 // Função para limpar o console
 const limparConsole = () => {
     process.stdout.write('\x1B[2J\x1B[0f'); // Limpa o console
