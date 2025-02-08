@@ -62,8 +62,14 @@ module.exports = {
                         return;
                     }
 
-                    await bot.sleep(bed);
-                    console.log("💤 O bot foi dormir com sucesso!");
+                    // Usando a cama (botão direito)
+                    bot.useOn(bed, (err) => {
+                        if (err) {
+                            console.error('Erro ao tentar usar a cama:', err);
+                        } else {
+                            console.log("💤 O bot foi dormir com sucesso!");
+                        }
+                    });
                 }
             } catch (err) {
                 console.error("⚠️ Erro ao tentar dormir:", err.message);
@@ -73,29 +79,26 @@ module.exports = {
 
     // Função para quebrar blocos à frente (corrigida)
     quebrarBlocos: (bot) => {
-        bot.on('physicsTick', async () => {
-            try {
-                const block = bot.blockAtCursor(5);
+        let quebrandoBloco = false; // Variável para controlar se o bot está quebrando um bloco
 
-                if (!block || block.name === 'air') {
-                    return; // Não há bloco válido para minerar
-                }
+        bot.on('spawn', () => {
+            // Verifica o bloco abaixo do bot
+            const block = bot.blockAt(bot.entity.position.offset(0, -1, 0));
 
-                const pickaxe = bot.inventory.items().find((item) => item.name.includes('pickaxe'));
-                if (pickaxe) {
-                    await bot.equip(pickaxe, 'hand');
-                }
+            if (block && !quebrandoBloco) {
+                quebrandoBloco = true; // Marca como quebrando um bloco
 
-                if (!bot.canDigBlock(block)) {
-                    console.log("🚫 Não é possível cavar este bloco.");
-                    return;
-                }
+                // Inicia o processo de quebra do bloco
+                bot.dig(block, (err) => {
+                    if (err) {
+                        console.error('Erro ao quebrar o bloco:', err);
+                    } else {
+                        console.log(`✅ Bloco ${block.name} quebrado com sucesso!`);
+                    }
 
-                console.log("⛏️ Bloco encontrado! Iniciando mineração...");
-                await bot.dig(block);
-                console.log("✅ Bloco minerado com sucesso!");
-            } catch (err) {
-                console.error("⚠️ Erro ao minerar bloco:", err.message);
+                    // Após quebrar o bloco, libere para quebrar outro
+                    quebrandoBloco = false;
+                });
             }
         });
     },
