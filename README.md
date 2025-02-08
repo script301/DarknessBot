@@ -4,17 +4,18 @@
 
 - 🎮 Cansado de perder horas no Minecraft só para manter o servidor online ou coletar recursos? Apresentamos o DarknessBot, o bot que faz tudo isso para você! 🚀
 
-- ✅ Manutenção AFK – Seu servidor sempre online, sem esforço! ⏳
-- ⛏️ Coleta Automática – Farm cobblestone? Pedra infinita! 🤑
+- ✅ AFK – Seu servidor sempre online, sem esforço! ⏳
+- ⛏️ Coleta Automática – Farm de cobblestone? Pedra infinita! 🤑
 - 🛡️ Defesa Contra Mobs – Nada de Creepers te pegando de surpresa! 👾
 - 🛏️ Dormir à Noite – O bot encontra uma cama e descansa sozinho! 🌙
 - 💬 Mensagens no Chat – Interaja sem precisar digitar! 💡
-- ⚙️ Configuração Fácil – Tudo pronto em minutos, sem complicações! 🖥️
+- ⚙️ Configuração Fácil – Tudo pronto em minutos, sem complicações via linha cmd! 🖥️
 
 ## 🚀 Aproveite o máximo do Minecraft sem perder tempo com tarefas chatas! Adquira o DarknessBot agora e revolucione sua jogatina! 🌟
 
 ## 📦 Compatibilidade  
 🖥️ Windows | 🐧 Linux | 📱 Termux (Android)  
+-(com arquivos de instalação automática)
 ✔ Minecraft Java e Bedrock  
 
 ---
