@@ -1,6 +1,6 @@
 module.exports = {
     // Função para mover o bot periodicamente
-    moveBot: (bot) => {
+    movimentoDoBot: (bot) => {
         setInterval(() => {
             bot.setControlState('forward', true);
             setTimeout(() => {
@@ -10,7 +10,7 @@ module.exports = {
     },
 
     // Função para o bot pular periodicamente
-    jumpBot: (bot) => {
+    puloDoBot: (bot) => {
         setInterval(() => {
             bot.setControlState('jump', true);
             setTimeout(() => {
@@ -20,7 +20,7 @@ module.exports = {
     },
 
     // Função para atacar mobs hostis
-    attackMobs: (bot) => {
+    atacarMobs: (bot) => {
         bot.on('physicsTick', () => {
             const mob = bot.nearestEntity((entity) => {
                 return entity.type === 'mob' && entity.position.distanceTo(bot.entity.position) < 3;
@@ -38,7 +38,7 @@ module.exports = {
     },
 
     // Função para dormir à noite
-    sleepAtNight: (bot) => {
+    dormirANoite: (bot) => {
         bot.on('time', () => {
             if (bot.time.timeOfDay >= 13000 && bot.time.timeOfDay <= 23000) { // É noite
                 const bed = bot.findBlock({
@@ -57,7 +57,7 @@ module.exports = {
     },
 
     // Função para quebrar blocos à frente
-    breakBlocks: (bot) => {
+    quebrarBlocos: (bot) => {
         bot.on('physicsTick', () => {
             const block = bot.blockAtCursor(5);
             if (block && block.name !== 'air') {
@@ -72,7 +72,7 @@ module.exports = {
     },
 
     // Função para ir até coordenadas específicas
-    goToCoordinates: (bot, config) => {
+    irParaCoordenadas: (bot, config) => {
         const { x, y, z } = config.targetCoordinates;
         bot.once('spawn', () => {
             bot.pathfinder.setGoal(new mineflayer.pathfinder.goals.GoalNear(x, y, z, 1));
@@ -81,7 +81,7 @@ module.exports = {
     },
 
     // Função para enviar mensagens no chat
-    sendChatMessages: (bot, config) => {
+    enviarMensagensNoChat: (bot, config) => {
         setInterval(() => {
             const message = config.chatMessages[Math.floor(Math.random() * config.chatMessages.length)];
             bot.chat(message);
@@ -90,7 +90,7 @@ module.exports = {
     },
 
     // Função para comer quando estiver com fome
-    eatWhenHungry: (bot) => {
+    comerQuandoFaminto: (bot) => {
         bot.on('health', () => {
             if (bot.food < 18) { // Se a fome estiver baixa
                 const food = bot.inventory.items().find((item) => item.name.includes('apple') || item.name.includes('bread'));
