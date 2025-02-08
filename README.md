@@ -15,7 +15,7 @@
 
 ## 📦 Compatibilidade  
 🖥️ Windows | 🐧 Linux | 📱 Termux (Android)  
--(com arquivos de instalação automática)
+- (com arquivos de instalação automática)
 ✔ Minecraft Java e Bedrock  
 
 ---
