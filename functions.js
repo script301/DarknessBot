@@ -20,17 +20,6 @@ module.exports = {
     },
 
     // Função para atacar mobs hostis
-    atacarMobs: (bot) => {
-        bot.on('spawn', () => {
-            bot.on('entitySpawn', (entity) => {
-                if (entity.type === 'mob' && entity.mobType !== 'Player') {
-                    bot.attack(entity);
-                }
-            });
-        });
-    },
-
-    // Função para atacar mobs hostis (quando o bot é atacado)
     atacarMobsAoSerAtacado: (bot) => {
         let coordenadaAnterior = bot.entity.position.clone(); // Guarda a coordenada inicial
 
@@ -169,6 +158,22 @@ module.exports = {
                 }
             }
         });
+    },
+
+    // Função para verificar e interagir com veículos de forma segura
+    interagirComVeiculos: (bot) => {
+        bot.on('entitySpawn', (entity) => {
+            if (entity.type === 'vehicle') {
+                // Verifica se o veículo e a propriedade 'passengers' existem
+                if (entity.passengers && Array.isArray(entity.passengers)) {
+                    // Aqui você pode manipular a propriedade de passageiros do veículo
+                    entity.passengers.push(bot.entity); // Exemplo de adicionar o bot como passageiro
+                    console.log('🚗 Bot entrou no veículo!');
+                } else {
+                    console.log('⚠️ Veículo não tem passageiros ou não foi carregado corretamente.');
+                }
+            }
+        });
     }
 };
-                              
+                    
