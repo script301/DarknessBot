@@ -1,3 +1,5 @@
+const mineflayer = require('mineflayer');
+
 module.exports = {
     // Função para mover o bot periodicamente
     movimentoDoBot: (bot) => {
@@ -5,8 +7,8 @@ module.exports = {
             bot.setControlState('forward', true);
             setTimeout(() => {
                 bot.setControlState('forward', false);
-            }, 1000); // Move por 1 segundo
-        }, 60000); // Move a cada 60 segundos
+            }, 1000);
+        }, 60000);
     },
 
     // Função para o bot pular periodicamente
@@ -15,26 +17,28 @@ module.exports = {
             bot.setControlState('jump', true);
             setTimeout(() => {
                 bot.setControlState('jump', false);
-            }, 500); // Pula por 0.5 segundos
-        }, 30000); // Pula a cada 30 segundos
+            }, 500);
+        }, 30000);
     },
 
-    // Função para atacar mobs hostis corretamente
+    // Função para atacar mobs hostis automaticamente
     atacarMobs: (bot) => {
         setInterval(() => {
-            const mob = bot.nearestEntity(entity => {
-                return entity.type === 'mob' && entity.position.distanceTo(bot.entity.position) < 10;
-            });
+            const mob = bot.nearestEntity(entity => 
+                entity.type === 'mob' && 
+                entity.position.distanceTo(bot.entity.position) < 10
+            );
 
             if (mob) {
-                const espada = bot.inventory.items().find(item => item.name.includes('sword'));
-                if (espada) {
-                    bot.equip(espada, 'hand');
-                }
-                bot.attack(mob);
-                console.log(`⚔️ Atacando mob: ${mob.name}`);
+                const arma = bot.inventory.items().find(item => item.name.includes('sword') || item.name.includes('axe'));
+                if (arma) bot.equip(arma, 'hand');
+
+                bot.lookAt(mob.position.offset(0, mob.height, 0), true, () => {
+                    bot.attack(mob);
+                    console.log(`⚔️ Atacando mob: ${mob.name}`);
+                });
             }
-        }, 2000); // Verifica mobs a cada 2 segundos
+        }, 1000);
     },
 
     // Função para dormir à noite
@@ -42,13 +46,21 @@ module.exports = {
         setInterval(() => {
             try {
                 if (bot.time.timeOfDay >= 13000 && bot.time.timeOfDay <= 23000) {
-                    const bed = bot.findBlock({ matching: block => block.name.includes('bed'), maxDistance: 10 });
-                    if (bed) {
-                        bot.useOn(bed);
-                        console.log("💤 O bot foi dormir!");
-                    } else {
-                        console.log("❌ Nenhuma cama encontrada.");
-                    }
+                    if (!bot.entity) return;
+
+                    const bed = bot.findBlock({
+                        matching: (block) => block.name.includes('bed'),
+                        maxDistance: 10
+                    });
+
+                    if (!bed) return;
+
+                    if (bot.isSleeping) return;
+
+                    bot.useOn(bed, (err) => {
+                        if (err) console.error('Erro ao tentar dormir:', err);
+                        else console.log("💤 O bot foi dormir!");
+                    });
                 }
             } catch (err) {
                 console.error("⚠️ Erro ao tentar dormir:", err.message);
@@ -61,7 +73,7 @@ module.exports = {
         const { x, y, z } = config.targetCoordinates;
         bot.once('spawn', () => {
             bot.pathfinder.setGoal(new mineflayer.pathfinder.goals.GoalNear(x, y, z, 1));
-            console.log(`🗺️ Indo até: (${x}, ${y}, ${z})`);
+            console.log(`🗺️ Indo até as coordenadas: (${x}, ${y}, ${z})`);
         });
     },
 
@@ -70,31 +82,34 @@ module.exports = {
         setInterval(() => {
             const message = config.chatMessages[Math.floor(Math.random() * config.chatMessages.length)];
             bot.chat(message);
-            console.log(`💬 Enviando mensagem: "${message}"`);
-        }, 600000); // 10 minutos
+            console.log(`💬 Enviando mensagem no chat: "${message}"`);
+        }, 600000);
     },
 
     // Função para comer quando estiver com fome
     comerQuandoFaminto: (bot) => {
         bot.on('health', () => {
             if (bot.food < 18) {
-                const food = bot.inventory.items().find(item => item.name.includes('apple') || item.name.includes('bread'));
+                const food = bot.inventory.items().find((item) => item.name.includes('apple') || item.name.includes('bread'));
                 if (food) {
                     bot.equip(food, 'hand');
-                    bot.consume();
-                    console.log("🍎 O bot comeu algo!");
+                    bot.consume((err) => {
+                        if (err) console.error('🍎 Erro ao comer:', err);
+                        else console.log("🍎 Hora de comer!");
+                    });
                 }
             }
         });
     },
 
-    // Função para registrar logs a cada 2 segundos
+    // Função para logs periódicos otimizados
     registrarLogs: (bot) => {
         setInterval(() => {
-            console.log(`📌 Posição: X:${bot.entity.position.x.toFixed(2)} Y:${bot.entity.position.y.toFixed(2)} Z:${bot.entity.position.z.toFixed(2)}`);
-            console.log(`❤️ Vida: ${bot.health} | 🍗 Fome: ${bot.food}`);
-            const mobs = bot.entities ? Object.values(bot.entities).filter(entity => entity.type === 'mob') : [];
-            console.log(`👀 Mobs próximos: ${mobs.length > 0 ? mobs.map(mob => mob.name).join(', ') : "Nenhum"}`);
-        }, 2000);
+            console.clear();
+            console.log(`📌 Posição: ${bot.entity.position.round().toString()}`);
+            console.log(`❤️ Vida: ${bot.health}`);
+            console.log(`🍗 Fome: ${bot.food}`);
+            console.log(`🔄 Status: ${bot.state || 'Normal'}`);
+        }, 1000);
     }
 };
