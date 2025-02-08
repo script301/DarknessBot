@@ -1,6 +1,9 @@
 module.exports = {
-    host: 'seu_servidor_minecraft.com', // Endereço do servidor
-    port: 25565, // Porta do servidor (padrão é 25565)
+    server: {
+        host: 'seu_servidor_minecraft.com', // Endereço do servidor
+        port: 25565, // Porta do servidor (padrão é 25565)
+        mode: 'survival' // Modo do jogo (survival, creative, etc.)
+    },
     username: 'AFKBot', // Nome do bot
     version: '1.18.2', // Versão do Minecraft
     targetCoordinates: { x: 100, y: 64, z: 200 }, // Coordenadas para ir
