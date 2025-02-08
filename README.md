@@ -1,10 +1,8 @@
  ![image](https://github.com/user-attachments/assets/088d6e95-49f6-4801-87d0-5c2808381905)
 
-# ✨ 🔥 DarknessBot - Seu Aliado Automático no Minecraft! 🔥 ✨
+## ✨ 🔥 DarknessBot - Seu Aliado Automático no Minecraft! 🔥 ✨
 
 🎮 Cansado de perder horas no Minecraft só para manter o servidor online ou coletar recursos? Apresentamos o DarknessBot, o bot que faz tudo isso para você! 🚀
-
-💰 Por apenas R$ 30,00, você terá:
 
 ✅ Manutenção AFK – Seu servidor sempre online, sem esforço! ⏳
 ⛏️ Coleta Automática – Recursos coletados sem precisar minerar! 💎
@@ -13,7 +11,7 @@
 💬 Mensagens no Chat – Interaja sem precisar digitar! 💡
 ⚙️ Configuração Fácil – Tudo pronto em minutos, sem complicações! 🖥️
 
-# 🚀 Aproveite o máximo do Minecraft sem perder tempo com tarefas chatas! Adquira o DarknessBot agora e revolucione sua jogatina! 🌟
+## 🚀 Aproveite o máximo do Minecraft sem perder tempo com tarefas chatas! Adquira o DarknessBot agora e revolucione sua jogatina! 🌟
 
 ## 📦 Compatibilidade  
 🖥️ Windows | 🐧 Linux | 📱 Termux (Android)  
