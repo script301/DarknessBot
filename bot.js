@@ -152,6 +152,7 @@ const iniciarBot = () => {
     // Evento para lidar com desconexões
     bot.on('end', () => {
         console.log('🔌 DarknessBot desconectado. Reconectando em 5 segundos...');
+    
         setTimeout(() => {
             iniciarBot(); // Tenta reconectar após 5 segundos
         }, 5000);
@@ -159,4 +160,4 @@ const iniciarBot = () => {
 };
 
 mostrarMenu();
-        
+    
