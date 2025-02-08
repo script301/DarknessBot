@@ -136,9 +136,9 @@ const iniciarBot = () => {
         console.log('🌟 DarknessBot conectado e pronto para ficar AFK!');
         if (config.funcoes.movimentoDoBot) funcoes.movimentoDoBot(bot);
         if (config.funcoes.puloDoBot) funcoes.puloDoBot(bot);
-        if (config.funcoes.atacarMobs) funcoes.atacarMobsAoSerAtacado(bot); // Função de atacar mobs
+        if (config.funcoes.atacarMobs) funcoes.atacarMobsAoSerAtacado(bot);
         if (config.funcoes.dormirANoite) funcoes.dormirANoite(bot);
-        if (config.funcoes.quebrarBlocos) funcoes.quebrarBlocos(bot); // Função de quebrar blocos
+        if (config.funcoes.quebrarBlocos) funcoes.quebrarBlocos(bot);
         if (config.funcoes.irParaCoordenadas) funcoes.irParaCoordenadas(bot, config);
         if (config.funcoes.enviarMensagensNoChat) funcoes.enviarMensagensNoChat(bot, config);
         if (config.funcoes.comerQuandoFaminto) funcoes.comerQuandoFaminto(bot);
@@ -152,12 +152,18 @@ const iniciarBot = () => {
     // Evento para lidar com desconexões
     bot.on('end', () => {
         console.log('🔌 DarknessBot desconectado. Reconectando em 5 segundos...');
-    
-    setTimeout(() => {
+        setTimeout(() => {
             iniciarBot(); // Tenta reconectar após 5 segundos
         }, 5000);
+    });
+
+    // Adicionando verificações para evitar erro com veículos
+    bot.on('entitySpawn', (entity) => {
+        if (entity.type === 'vehicle' && !entity.passengers) {
+            console.warn('Tentativa de acessar veículo sem passageiros.');
+        }
     });
 };
 
 mostrarMenu();
-    
+                    
