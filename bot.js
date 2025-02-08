@@ -142,6 +142,13 @@ const iniciarBot = () => {
         if (config.funcoes.irParaCoordenadas) funcoes.irParaCoordenadas(bot, config);
         if (config.funcoes.enviarMensagensNoChat) funcoes.enviarMensagensNoChat(bot, config);
         if (config.funcoes.comerQuandoFaminto) funcoes.comerQuandoFaminto(bot);
+
+        // Agora é seguro ouvir os eventos
+        bot.on('entitySpawn', (entity) => {
+            if (entity.type === 'vehicle' && !entity.passengers) {
+                console.log('🚗 Ignorando veículo sem passageiros.');
+            }
+        });
     });
 
     // Evento para lidar com erros de conexão
@@ -160,20 +167,3 @@ const iniciarBot = () => {
 };
 
 mostrarMenu();
-
-// Verificar e lidar com as entidades de forma adequada
-bot.on('entitySpawn', (entity) => {
-    if (entity.type === 'vehicle' && !entity.passengers) {
-        console.log('🚗 Ignorando veículo sem passageiros.');
-    }
-});
-
-bot.on('spawn', () => {
-    for (const entityId in bot.entities) {
-        const entity = bot.entities[entityId];
-        if (entity.type === 'vehicle' && !entity.passengers) {
-            console.log('🚗 Ignorando veículo sem passageiros.');
-        }
-    }
-});
-                    
