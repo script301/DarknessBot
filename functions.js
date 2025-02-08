@@ -1,3 +1,4 @@
+const fs = require('fs');
 const readline = require('readline');
 
 module.exports = {
@@ -21,11 +22,11 @@ module.exports = {
         }, 30000); // Pula a cada 30 segundos
     },
 
-    // Função para atacar mobs hostis
+    // Função para atacar mobs hostis (agora com área de 7 blocos)
     atacarMobs: (bot) => {
         bot.on('physicsTick', () => {
             const mob = bot.nearestEntity((entity) => {
-                return entity.type === 'mob' && entity.position.distanceTo(bot.entity.position) < 3;
+                return entity.type === 'mob' && entity.position.distanceTo(bot.entity.position) < 7;
             });
 
             if (mob) {
@@ -39,64 +40,77 @@ module.exports = {
         });
     },
 
-    // Função para dormir à noite (corrigida)
+    // Função para dormir à noite (com área maior de busca e retorno ao ponto original)
     dormirANoite: (bot) => {
-        bot.on('time', async () => {
-            try {
-                if (bot.time.timeOfDay >= 13000 && bot.time.timeOfDay <= 23000) { // Verifica se é noite
-                    if (!bot.entity) {
-                        console.log("🚫 O bot não está ativo para dormir.");
-                        return;
-                    }
+        let pontoOriginal = null;
 
-                    const bed = bot.findBlock({
-                        matching: (block) => block.name.includes('bed'),
-                        maxDistance: 5
-                    });
-
-                    if (!bed) {
-                        console.log("❌ Nenhuma cama encontrada. O bot não pode dormir.");
-                        return;
-                    }
-
-                    if (bot.isSleeping) {
-                        console.log("💤 O bot já está dormindo.");
-                        return;
-                    }
-
-                    // Usando a cama (botão direito)
-                    bot.useOn(bed, (err) => {
-                        if (err) {
-                            console.error('Erro ao tentar usar a cama:', err);
-                        } else {
-                            console.log("💤 O bot foi dormir com sucesso!");
+        setInterval(() => {
+            bot.on('time', async () => {
+                try {
+                    if (bot.time.timeOfDay >= 13000 && bot.time.timeOfDay <= 23000) { // Verifica se é noite
+                        if (!bot.entity) {
+                            console.log("🚫 O bot não está ativo para dormir.");
+                            return;
                         }
-                    });
+
+                        if (!pontoOriginal) {
+                            pontoOriginal = bot.entity.position.clone(); // Guarda o ponto original
+                        }
+
+                        const bed = bot.findBlock({
+                            matching: (block) => block.name.includes('bed'),
+                            maxDistance: 20 // Aumenta a área de busca da cama para 20 blocos
+                        });
+
+                        if (!bed) {
+                            console.log("❌ Nenhuma cama encontrada. O bot não pode dormir.");
+                            return;
+                        }
+
+                        if (bot.isSleeping) {
+                            console.log("💤 O bot já está dormindo.");
+                            return;
+                        }
+
+                        // Usando a cama (botão direito)
+                        bot.useOn(bed, (err) => {
+                            if (err) {
+                                console.error('Erro ao tentar usar a cama:', err);
+                            } else {
+                                console.log("💤 O bot foi dormir com sucesso!");
+                                setTimeout(() => {
+                                    // Após dormir, o bot volta para o ponto original
+                                    bot.pathfinder.setGoal(new mineflayer.pathfinder.goals.GoalNear(pontoOriginal.x, pontoOriginal.y, pontoOriginal.z, 1));
+                                    console.log("🛏️ O bot acordou e voltou para o ponto original.");
+                                }, 2000); // Delay para garantir que o bot termine de dormir
+                            }
+                        });
+                    }
+                } catch (err) {
+                    console.error("⚠️ Erro ao tentar dormir:", err.message);
                 }
-            } catch (err) {
-                console.error("⚠️ Erro ao tentar dormir:", err.message);
-            }
-        });
+            });
+        }, 5000); // Atualiza a cada 5 segundos
     },
 
-    // Função para quebrar blocos específicos (agora configurável via ID)
+    // Função para quebrar blocos específicos (agora configurável via arquivo)
     quebrarBlocos: (bot) => {
         let quebrandoBloco = false; // Variável para evitar múltiplas quebras simultâneas
-        const blocosParaQuebrar = []; // Array para armazenar IDs de blocos a serem quebrados
+        let blocosParaQuebrar = []; // Array para armazenar IDs de blocos a serem quebrados
 
-        // Configuração do readline para capturar a entrada do usuário de forma interativa
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-        });
+        // Lê os blocos a serem quebrados de um arquivo de configuração
+        const carregarBlocosConfig = () => {
+            try {
+                const data = fs.readFileSync('blocos_config.json', 'utf8');
+                blocosParaQuebrar = JSON.parse(data);
+                console.log(`Blocos configurados para quebrar: ${blocosParaQuebrar.join(', ')}`);
+            } catch (err) {
+                console.error('Erro ao carregar configuração de blocos:', err);
+            }
+        };
 
-        rl.question("🎮 Digite os IDs dos blocos que deseja que o bot quebre (separe por vírgula): ", (input) => {
-            const blocos = input.trim().split(',').map(id => id.trim());
-            blocosParaQuebrar.length = 0; // Limpar lista anterior
-            blocosParaQuebrar.push(...blocos);
-            console.log(`Blocos configurados para quebrar: ${blocosParaQuebrar.join(', ')}`);
-            rl.close(); // Fecha o readline após receber a entrada
-        });
+        carregarBlocosConfig(); // Carrega a configuração ao iniciar
+        setInterval(carregarBlocosConfig, 5000); // Atualiza a cada 5 segundos
 
         setInterval(() => {
             if (quebrandoBloco || bot.isUsingItem) return; // Se já estiver quebrando, não faz nada
@@ -153,4 +167,4 @@ module.exports = {
         });
     }
 };
-                 
+                        
