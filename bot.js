@@ -2,6 +2,7 @@ const mineflayer = require('mineflayer');
 const readline = require('readline');
 const config = require('./config');
 const funcoes = require('./functions');
+const { salvarDados } = require('./database');
 
 // Interface para ler entrada do usuário
 const rl = readline.createInterface({
@@ -22,7 +23,8 @@ const mostrarMenu = () => {
     console.log('2. Ativar/Desativar funções');
     console.log('3. Configurar coordenadas');
     console.log('4. Configurar servidor');
-    console.log('5. Sair');
+    console.log('5. Salvar configurações');
+    console.log('6. Sair');
     rl.question('Escolha uma opção: ', (escolha) => {
         switch (escolha) {
             case '1':
@@ -38,6 +40,9 @@ const mostrarMenu = () => {
                 configurarServidor();
                 break;
             case '5':
+                salvarConfig();
+                break;
+            case '6':
                 console.log('👋 Saindo...');
                 rl.close();
                 break;
@@ -47,6 +52,13 @@ const mostrarMenu = () => {
                 break;
         }
     });
+};
+
+// Função para salvar as configurações
+const salvarConfig = () => {
+    salvarDados(config);
+    console.log("✅ Configurações salvas com sucesso!");
+    setTimeout(() => mostrarMenu(), 1000); // Volta ao menu após 1 segundo
 };
 
 // Função para ativar/desativar funções
@@ -141,10 +153,10 @@ const iniciarBot = () => {
     bot.on('end', () => {
         console.log('🔌 DarknessBot desconectado. Reconectando em 5 segundos...');
         setTimeout(() => {
-            iniciarBot(); // Chama a função iniciarBot para reconectar
-        }, 5000); // Tenta reconectar após 5 segundos
+            iniciarBot(); // Tenta reconectar após 5 segundos
+        }, 5000);
     });
 };
 
-// Inicia o menu
 mostrarMenu();
+                        
