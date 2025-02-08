@@ -82,21 +82,21 @@ module.exports = {
         let quebrandoBloco = false; // Variável para controlar se o bot está quebrando um bloco
 
         bot.on('spawn', () => {
-            // Verifica o bloco abaixo do bot
-            const block = bot.blockAt(bot.entity.position.offset(0, -1, 0));
+            const blocoFrente = bot.blockAt(bot.entity.position.offset(0, 0, 1)); // Verifica o bloco à frente do bot
 
-            if (block && !quebrandoBloco) {
-                quebrandoBloco = true; // Marca como quebrando um bloco
+            if (blocoFrente && !quebrandoBloco && !bot.isUsingItem) {
+                // Marca o bot como estando no processo de quebra de bloco
+                quebrandoBloco = true;
 
                 // Inicia o processo de quebra do bloco
-                bot.dig(block, (err) => {
+                bot.dig(blocoFrente, (err) => {
                     if (err) {
                         console.error('Erro ao quebrar o bloco:', err);
                     } else {
-                        console.log(`✅ Bloco ${block.name} quebrado com sucesso!`);
+                        console.log(`✅ Bloco ${blocoFrente.name} quebrado com sucesso!`);
                     }
 
-                    // Após quebrar o bloco, libere para quebrar outro
+                    // Após quebrar o bloco, libera para quebrar outro
                     quebrandoBloco = false;
                 });
             }
