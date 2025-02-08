@@ -77,32 +77,30 @@ module.exports = {
         });
     },
 
-    
     // Função para quebrar blocos à frente (corrigida)
-quebrarBlocos: (bot) => {
-    let quebrandoBloco = false; // Variável para evitar múltiplas quebras simultâneas
+    quebrarBlocos: (bot) => {
+        let quebrandoBloco = false; // Variável para evitar múltiplas quebras simultâneas
 
-    setInterval(() => {
-        if (quebrandoBloco || bot.isUsingItem) return; // Se já estiver quebrando, não faz nada
+        setInterval(() => {
+            if (quebrandoBloco || bot.isUsingItem) return; // Se já estiver quebrando, não faz nada
 
-        const blocoFrente = bot.blockAt(bot.entity.position.offset(0, 0, 1)); // Bloco à frente
+            const blocoFrente = bot.blockAt(bot.entity.position.offset(0, 0, 1)); // Bloco à frente
 
-        if (blocoFrente && blocoFrente.diggable) {
-            quebrandoBloco = true; // Define que está quebrando um bloco
+            if (blocoFrente && blocoFrente.diggable) {
+                quebrandoBloco = true; // Define que está quebrando um bloco
 
-            bot.dig(blocoFrente, (err) => {
-                if (err) {
-                    console.error('Erro ao quebrar o bloco:', err);
-                } else {
-                    console.log(`✅ Bloco ${blocoFrente.name} quebrado com sucesso!`);
-                }
+                bot.dig(blocoFrente, (err) => {
+                    if (err) {
+                        console.error('Erro ao quebrar o bloco:', err);
+                    } else {
+                        console.log(`✅ Bloco ${blocoFrente.name} quebrado com sucesso!`);
+                    }
 
-                quebrandoBloco = false; // Libera para quebrar outro bloco depois
-            });
-        }
-    }, 3000); // Verifica a cada 3 segundos
-}
-
+                    quebrandoBloco = false; // Libera para quebrar outro bloco depois
+                });
+            }
+        }, 3000); // Verifica a cada 3 segundos
+    },
 
     // Função para ir até coordenadas específicas
     irParaCoordenadas: (bot, config) => {
