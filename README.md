@@ -51,6 +51,7 @@ DarknessBot é um bot completo para servidores de Minecraft, projetado para se c
 ✔ Minecraft Java e Bedrock  
 
 ---
+![image](https://github.com/user-attachments/assets/6258e758-96e2-4c04-9b31-89971368b683)
 
 ## 💰 Como Comprar?  
 O DarknessBot está disponível por apenas R$30!  
