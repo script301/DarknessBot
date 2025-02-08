@@ -1,7 +1,7 @@
 const mineflayer = require('mineflayer');
 const readline = require('readline');
 const config = require('./config');
-const funcoes = require('./functions');
+const funcoes = require('./functions'); // Importando as funções corretamente
 const { salvarDados } = require('./database');
 
 // Interface para ler entrada do usuário
@@ -136,19 +136,12 @@ const iniciarBot = () => {
         console.log('🌟 DarknessBot conectado e pronto para ficar AFK!');
         if (config.funcoes.movimentoDoBot) funcoes.movimentoDoBot(bot);
         if (config.funcoes.puloDoBot) funcoes.puloDoBot(bot);
-        if (config.funcoes.atacarMobs) funcoes.atacarMobs(bot);
+        if (config.funcoes.atacarMobs) funcoes.atacarMobs(bot);  // Chama a função de atacar mobs
         if (config.funcoes.dormirANoite) funcoes.dormirANoite(bot);
         if (config.funcoes.quebrarBlocos) funcoes.quebrarBlocos(bot);
         if (config.funcoes.irParaCoordenadas) funcoes.irParaCoordenadas(bot, config);
         if (config.funcoes.enviarMensagensNoChat) funcoes.enviarMensagensNoChat(bot, config);
         if (config.funcoes.comerQuandoFaminto) funcoes.comerQuandoFaminto(bot);
-
-        // Agora é seguro ouvir os eventos
-        bot.on('entitySpawn', (entity) => {
-            if (entity.type === 'vehicle' && !entity.passengers) {
-                console.log('🚗 Ignorando veículo sem passageiros.');
-            }
-        });
     });
 
     // Evento para lidar com erros de conexão
@@ -160,7 +153,7 @@ const iniciarBot = () => {
     bot.on('end', () => {
         console.log('🔌 DarknessBot desconectado. Reconectando em 5 segundos...');
     
-        setTimeout(() => {
+    setTimeout(() => {
             iniciarBot(); // Tenta reconectar após 5 segundos
         }, 5000);
     });
