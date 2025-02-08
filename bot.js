@@ -138,7 +138,6 @@ const iniciarBot = () => {
         if (config.funcoes.puloDoBot) funcoes.puloDoBot(bot);
         if (config.funcoes.atacarMobs) funcoes.atacarMobs(bot);  // Chama a função de atacar mobs
         if (config.funcoes.dormirANoite) funcoes.dormirANoite(bot);
-        if (config.funcoes.quebrarBlocos) funcoes.quebrarBlocos(bot);
         if (config.funcoes.irParaCoordenadas) funcoes.irParaCoordenadas(bot, config);
         if (config.funcoes.enviarMensagensNoChat) funcoes.enviarMensagensNoChat(bot, config);
         if (config.funcoes.comerQuandoFaminto) funcoes.comerQuandoFaminto(bot);
@@ -160,4 +159,4 @@ const iniciarBot = () => {
 };
 
 mostrarMenu();
-             
+                    
