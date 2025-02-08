@@ -9,13 +9,20 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+// Função para limpar o console
+const clearConsole = () => {
+    process.stdout.write('\x1B[2J\x1B[0f'); // Limpa o console
+};
+
 // Função para exibir o menu
 const showMenu = () => {
+    clearConsole(); // Limpa o console antes de exibir o menu
     console.log('\n🌟 Menu do AFK Bot 🌟');
     console.log('1. Iniciar bot normalmente');
     console.log('2. Ativar/Desativar funções');
     console.log('3. Configurar coordenadas');
-    console.log('4. Sair');
+    console.log('4. Configurar servidor');
+    console.log('5. Sair');
     rl.question('Escolha uma opção: ', (choice) => {
         switch (choice) {
             case '1':
@@ -28,12 +35,15 @@ const showMenu = () => {
                 setCoordinates();
                 break;
             case '4':
+                configureServer();
+                break;
+            case '5':
                 console.log('👋 Saindo...');
                 rl.close();
                 break;
             default:
                 console.log('❌ Opção inválida. Tente novamente.');
-                showMenu();
+                setTimeout(() => showMenu(), 1000); // Volta ao menu após 1 segundo
                 break;
         }
     });
@@ -41,6 +51,7 @@ const showMenu = () => {
 
 // Função para ativar/desativar funções
 const toggleFunctions = () => {
+    clearConsole(); // Limpa o console
     console.log('\n🔧 Ativar/Desativar Funções 🔧');
     Object.keys(config.functions).forEach((func, index) => {
         console.log(`${index + 1}. ${func}: ${config.functions[func] ? '✅ Ativada' : '❌ Desativada'}`);
@@ -53,10 +64,10 @@ const toggleFunctions = () => {
             if (func) {
                 config.functions[func] = !config.functions[func];
                 console.log(`✅ ${func} foi ${config.functions[func] ? 'ativada' : 'desativada'}.`);
-                toggleFunctions();
+                setTimeout(() => toggleFunctions(), 1000); // Volta ao menu após 1 segundo
             } else {
                 console.log('❌ Opção inválida. Tente novamente.');
-                toggleFunctions();
+                setTimeout(() => toggleFunctions(), 1000); // Volta ao menu após 1 segundo
             }
         }
     });
@@ -64,13 +75,31 @@ const toggleFunctions = () => {
 
 // Função para configurar coordenadas
 const setCoordinates = () => {
+    clearConsole(); // Limpa o console
     console.log('\n📍 Configurar Coordenadas 📍');
     rl.question('Digite a coordenada X: ', (x) => {
         rl.question('Digite a coordenada Y: ', (y) => {
             rl.question('Digite a coordenada Z: ', (z) => {
                 config.targetCoordinates = { x: parseInt(x), y: parseInt(y), z: parseInt(z) };
                 console.log(`✅ Coordenadas definidas para (${x}, ${y}, ${z}).`);
-                showMenu();
+                setTimeout(() => showMenu(), 1000); // Volta ao menu após 1 segundo
+            });
+        });
+    });
+};
+
+// Função para configurar o servidor
+const configureServer = () => {
+    clearConsole(); // Limpa o console
+    console.log('\n🌐 Configurar Servidor 🌐');
+    rl.question('Digite o IP do servidor: ', (host) => {
+        rl.question('Digite a porta do servidor: ', (port) => {
+            rl.question('Digite o modo do jogo (survival, creative, etc.): ', (mode) => {
+                config.server.host = host;
+                config.server.port = parseInt(port);
+                config.server.mode = mode.toLowerCase();
+                console.log(`✅ Servidor configurado: ${host}:${port} (Modo: ${mode}).`);
+                setTimeout(() => showMenu(), 1000); // Volta ao menu após 1 segundo
             });
         });
     });
@@ -78,10 +107,11 @@ const setCoordinates = () => {
 
 // Função para iniciar o bot
 const startBot = () => {
+    clearConsole(); // Limpa o console
     console.log('\n🚀 Iniciando o bot...');
     const bot = mineflayer.createBot({
-        host: config.host,
-        port: config.port,
+        host: config.server.host,
+        port: config.server.port,
         username: config.username,
         version: config.version
     });
@@ -109,8 +139,8 @@ const startBot = () => {
         console.log('🔌 Bot desconectado. Reconectando em 5 segundos...');
         setTimeout(() => {
             bot = mineflayer.createBot({
-                host: config.host,
-                port: config.port,
+                host: config.server.host,
+                port: config.server.port,
                 username: config.username,
                 version: config.version
             });
