@@ -1,28 +1,21 @@
 @echo off
-:: Função para limpar o console
+chcp 65001 >nul
+title 🌟 Instalando DarknessBot... Aguarde! 🌟
 cls
 
-:: Exibe uma mensagem de início de instalação
-echo 🚀 Preparando o DarknessBot para ação... 🔧
-timeout /t 2 /nobreak >nul
+echo 🔥 Preparando ambiente para o DarknessBot...
+timeout /t 2 >nul
 
-:: Atualiza o npm
-echo 🔄 Atualizando npm... A magia está começando!
-timeout /t 2 /nobreak >nul
-npm install -g npm@latest
+echo 📦 Instalando Node.js e dependências...
+winget install OpenJS.NodeJS -h >nul 2>&1
+timeout /t 2 >nul
 
-:: Instala as dependências do bot (mineflayer e pathfinder)
-echo 🔧 Instalando as dependências necessárias... bot está quase pronto!
-timeout /t 2 /nobreak >nul
-npm install mineflayer pathfinder
+echo 🚀 Instalando pacotes necessários...
+npm install >nul 2>&1
+timeout /t 2 >nul
 
-:: Exibe uma mensagem de conclusão
-cls
-echo 🎉 Instalação concluída com sucesso! Agora o bot está pronto para brilhar! ✨
-timeout /t 2 /nobreak >nul
+echo 🎮 Iniciando DarknessBot...
+node bot.js
 
-:: Executa o bot automaticamente
-cls
-echo 🚀 Iniciando o DarknessBot... prepare-se para a aventura!
-timeout /t 2 /nobreak >nul
-node index.js
+echo ✅ Instalação concluída! O DarknessBot está rodando.  
+pause
