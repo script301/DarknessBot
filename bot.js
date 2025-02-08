@@ -136,7 +136,7 @@ const iniciarBot = () => {
         console.log('🌟 DarknessBot conectado e pronto para ficar AFK!');
         if (config.funcoes.movimentoDoBot) funcoes.movimentoDoBot(bot);
         if (config.funcoes.puloDoBot) funcoes.puloDoBot(bot);
-        if (config.funcoes.atacarMobs) funcoes.atacarMobsAoSerAtacado(bot);
+        if (config.funcoes.atacarMobs) funcoes.atacarMobs(bot);
         if (config.funcoes.dormirANoite) funcoes.dormirANoite(bot);
         if (config.funcoes.quebrarBlocos) funcoes.quebrarBlocos(bot);
         if (config.funcoes.irParaCoordenadas) funcoes.irParaCoordenadas(bot, config);
@@ -152,28 +152,28 @@ const iniciarBot = () => {
     // Evento para lidar com desconexões
     bot.on('end', () => {
         console.log('🔌 DarknessBot desconectado. Reconectando em 5 segundos...');
+    
         setTimeout(() => {
             iniciarBot(); // Tenta reconectar após 5 segundos
         }, 5000);
     });
-
-    // Escutar por novas entidades (e veículos)
-    bot.on('entitySpawn', (entity) => {
-        if (entity.type === 'vehicle' && !entity.passengers) {
-            // Ignorar veículo sem passageiros
-            console.log('🚗 Ignorando veículo sem passageiros.');
-        }
-    });
-
-    // Adicionando uma verificação para prevenir erro com veículos
-    bot.on('spawn', () => {
-        bot.entities.forEach(entity => {
-            if (entity.type === 'vehicle' && !entity.passengers) {
-                console.log('🚗 Ignorando veículo sem passageiros.');
-            }
-        });
-    });
 };
 
 mostrarMenu();
-        
+
+// Verificar e lidar com as entidades de forma adequada
+bot.on('entitySpawn', (entity) => {
+    if (entity.type === 'vehicle' && !entity.passengers) {
+        console.log('🚗 Ignorando veículo sem passageiros.');
+    }
+});
+
+bot.on('spawn', () => {
+    for (const entityId in bot.entities) {
+        const entity = bot.entities[entityId];
+        if (entity.type === 'vehicle' && !entity.passengers) {
+            console.log('🚗 Ignorando veículo sem passageiros.');
+        }
+    }
+});
+                    
