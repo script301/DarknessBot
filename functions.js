@@ -1,3 +1,5 @@
+const readline = require('readline');
+
 module.exports = {
     // Função para mover o bot periodicamente
     movimentoDoBot: (bot) => {
@@ -82,13 +84,18 @@ module.exports = {
         let quebrandoBloco = false; // Variável para evitar múltiplas quebras simultâneas
         const blocosParaQuebrar = []; // Array para armazenar IDs de blocos a serem quebrados
 
-        // Função para adicionar IDs de blocos no console
-        console.log("🎮 Digite os IDs dos blocos que deseja que o bot quebre (separe por vírgula):");
-        process.stdin.on('data', (input) => {
-            const blocos = input.toString().trim().split(',').map(id => id.trim());
+        // Configuração do readline para capturar a entrada do usuário de forma interativa
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+
+        rl.question("🎮 Digite os IDs dos blocos que deseja que o bot quebre (separe por vírgula): ", (input) => {
+            const blocos = input.trim().split(',').map(id => id.trim());
             blocosParaQuebrar.length = 0; // Limpar lista anterior
             blocosParaQuebrar.push(...blocos);
             console.log(`Blocos configurados para quebrar: ${blocosParaQuebrar.join(', ')}`);
+            rl.close(); // Fecha o readline após receber a entrada
         });
 
         setInterval(() => {
@@ -146,4 +153,4 @@ module.exports = {
         });
     }
 };
-    
+                 
