@@ -20,6 +20,17 @@ module.exports = {
     },
 
     // Função para atacar mobs hostis
+    atacarMobs: (bot) => {
+        bot.on('spawn', () => {
+            bot.on('entitySpawn', (entity) => {
+                if (entity.type === 'mob' && entity.mobType !== 'Player') {
+                    bot.attack(entity);
+                }
+            });
+        });
+    },
+
+    // Função para atacar mobs hostis (quando o bot é atacado)
     atacarMobsAoSerAtacado: (bot) => {
         let coordenadaAnterior = bot.entity.position.clone(); // Guarda a coordenada inicial
 
@@ -160,3 +171,4 @@ module.exports = {
         });
     }
 };
+                              
