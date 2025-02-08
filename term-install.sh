@@ -44,4 +44,4 @@ sleep 2
 limpar_console
 echo "🚀 Iniciando o DarknessBot... prepare-se para a aventura!"
 sleep 2
-node index.js
+node bot.js
