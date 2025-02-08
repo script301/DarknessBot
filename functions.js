@@ -71,17 +71,31 @@ module.exports = {
         });
     },
 
-    // Função para quebrar blocos à frente
+    // Função para quebrar blocos à frente (corrigida)
     quebrarBlocos: (bot) => {
-        bot.on('physicsTick', () => {
-            const block = bot.blockAtCursor(5);
-            if (block && block.name !== 'air') {
+        bot.on('physicsTick', async () => {
+            try {
+                const block = bot.blockAtCursor(5);
+
+                if (!block || block.name === 'air') {
+                    return; // Não há bloco válido para minerar
+                }
+
                 const pickaxe = bot.inventory.items().find((item) => item.name.includes('pickaxe'));
                 if (pickaxe) {
-                    bot.equip(pickaxe, 'hand');
+                    await bot.equip(pickaxe, 'hand');
                 }
-                bot.dig(block);
-                console.log("⛏️ Blocos? Hora de minerar!");
+
+                if (!bot.canDigBlock(block)) {
+                    console.log("🚫 Não é possível cavar este bloco.");
+                    return;
+                }
+
+                console.log("⛏️ Bloco encontrado! Iniciando mineração...");
+                await bot.dig(block);
+                console.log("✅ Bloco minerado com sucesso!");
+            } catch (err) {
+                console.error("⚠️ Erro ao minerar bloco:", err.message);
             }
         });
     },
