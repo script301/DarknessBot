@@ -1,61 +1,69 @@
-const readline = require('readline');
-const chalk = require('chalk');
+// bot.js
+const mineflayer = require('mineflayer');
+const config = require('./config');
+const { functions, sleepAtNightFunction, attackMobsFunction, eatFoodFunction } = require('./functions');
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
+// Criar o bot com base nas configurações
+const bot = mineflayer.createBot({
+  host: config.server.host,
+  port: config.server.port,
+  username: 'Bot',
+  version: config.server.version,
+  auth: 'offline',
 });
 
-const config = {
-    serverSettings: {
-        ip: 'localhost',
-        port: 25565,
-        username: 'DarknessBot'
-    }
-};
+// Evento de inicialização do bot
+bot.on('spawn', () => {
+  console.log('Bot iniciou no servidor!');
+  setInterval(() => {
+    console.log('O bot está ativo e funcionando!');
+  }, 2000); // Log a cada 2 segundos
 
+  // Iniciar funções do bot
+  sleepAtNightFunction(bot);
+  attackMobsFunction(bot);
+  eatFoodFunction(bot);
+});
+
+// Função para exibir o menu de edição
 function showMenu() {
-    console.clear();
-    console.log(chalk.blue('============================='));
-    console.log(chalk.green('        DARKNESS BOT         '));
-    console.log(chalk.blue('============================='));
-    console.log(chalk.yellow('1. Configuração do Servidor'));
-    console.log(chalk.yellow('2. Sair'));
-    console.log(chalk.blue('============================='));
-    rl.question(chalk.cyan('Escolha uma opção: '), (option) => {
-        handleMenuSelection(option);
-    });
+  console.log('\n--- Menu de Configuração do Bot ---');
+  console.log('1. Ativar/Desativar Dormir à Noite');
+  console.log('2. Ativar/Desativar Atacar Mobs');
+  console.log('3. Ativar/Desativar Comer Alimentos');
+  console.log('0. Sair');
+  process.stdin.resume();
+  process.stdin.setEncoding('utf8');
+  process.stdin.on('data', handleMenuChoice);
 }
 
-function handleMenuSelection(option) {
-    switch (option) {
-        case '1':
-            configureServer();
-            break;
-        case '2':
-            console.log(chalk.red('Saindo...'));
-            rl.close();
-            break;
-        default:
-            console.log(chalk.red('Opção inválida!'));
-            setTimeout(showMenu, 1000);
-    }
+// Função para processar a escolha do menu
+function handleMenuChoice(choice) {
+  choice = choice.trim();
+  
+  switch (choice) {
+    case '1':
+      functions.sleepAtNight = !functions.sleepAtNight;
+      console.log(`Dormir à noite ${functions.sleepAtNight ? 'ativado' : 'desativado'}`);
+      break;
+    case '2':
+      functions.attackMobs = !functions.attackMobs;
+      console.log(`Atacar mobs ${functions.attackMobs ? 'ativado' : 'desativado'}`);
+      break;
+    case '3':
+      functions.eatFood = !functions.eatFood;
+      console.log(`Comer alimentos ${functions.eatFood ? 'ativado' : 'desativado'}`);
+      break;
+    case '0':
+      console.log('Saindo...');
+      process.exit();
+      break;
+    default:
+      console.log('Escolha inválida. Tente novamente.');
+  }
+
+  showMenu();  // Exibir novamente o menu após a escolha
 }
 
-function configureServer() {
-    console.clear();
-    console.log(chalk.green('Configuração do Servidor'));
-    rl.question(chalk.cyan(`IP Atual [${config.serverSettings.ip}]: `), (ip) => {
-        if (ip) config.serverSettings.ip = ip;
-        rl.question(chalk.cyan(`Porta Atual [${config.serverSettings.port}]: `), (port) => {
-            if (port) config.serverSettings.port = parseInt(port);
-            rl.question(chalk.cyan(`Nome de Usuário [${config.serverSettings.username}]: `), (username) => {
-                if (username) config.serverSettings.username = username;
-                console.log(chalk.green('Configuração salva!'));
-                setTimeout(showMenu, 1000);
-            });
-        });
-    });
-}
-
+// Exibir o menu de configurações assim que o bot iniciar
 showMenu();
