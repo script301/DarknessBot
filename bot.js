@@ -13,6 +13,12 @@ function createBot() {
     auth: 'offline',
   });
 }
+<<<<<<< HEAD
+=======
+
+// Criar o bot com base nas configurações
+let bot = createBot();
+>>>>>>> 2cf2818e89c3e1b997cd8b0cc67531ab2a100fdf
 
 // Função para iniciar o bot
 function startBot() {
@@ -34,11 +40,19 @@ function startBot() {
 
 // Função para exibir o menu de configuração
 function showMenu() {
+<<<<<<< HEAD
   console.clear();
   console.log('--- Menu Principal ---');
   console.log('1. Iniciar Bot');
   console.log('2. Editar Configurações do Servidor');
   console.log('3. Gerenciar Funções do Bot');
+=======
+  console.log('\n--- Menu de Configuração do Bot ---');
+  console.log('1. Ativar/Desativar Dormir à Noite');
+  console.log('2. Ativar/Desativar Atacar Mobs');
+  console.log('3. Ativar/Desativar Comer Alimentos');
+  console.log('4. Editar Configurações do Servidor');
+>>>>>>> 2cf2818e89c3e1b997cd8b0cc67531ab2a100fdf
   console.log('0. Sair');
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
@@ -100,6 +114,9 @@ function handleFunctionChoice(choice) {
       functions.eatFood = !functions.eatFood;
       console.log(`Comer alimentos ${functions.eatFood ? 'ativado' : 'desativado'}`);
       break;
+    case '4':
+      editServerConfig();
+      break;
     case '0':
       showMenu();
       return;
@@ -113,9 +130,14 @@ function handleFunctionChoice(choice) {
 
 // Função para editar as configurações do servidor pelo console
 function editServerConfig() {
+<<<<<<< HEAD
   console.clear();
   console.log('--- Editar Configurações do Servidor ---');
   console.log('Configuração Atual:');
+=======
+  console.log('\n--- Editar Configurações do Servidor ---');
+  console.log('Atual Configuração:');
+>>>>>>> 2cf2818e89c3e1b997cd8b0cc67531ab2a100fdf
   console.log(`IP: ${config.server.host}, Porta: ${config.server.port}, Versão: ${config.server.version}`);
 
   console.log('Digite o novo IP (deixe em branco para manter):');
@@ -133,11 +155,19 @@ function editServerConfig() {
 
         // Recriar o bot com as novas configurações
         bot.quit();  // Desconectar o bot antigo
+<<<<<<< HEAD
         startBot();  // Criar um novo bot com as configurações atualizadas
+=======
+        bot = createBot();  // Criar um novo bot com as configurações atualizadas
+>>>>>>> 2cf2818e89c3e1b997cd8b0cc67531ab2a100fdf
       });
     });
   });
 }
 
+<<<<<<< HEAD
 // Exibir o menu principal assim que o bot iniciar
+=======
+// Exibir o menu de configurações assim que o bot iniciar
+>>>>>>> 2cf2818e89c3e1b997cd8b0cc67531ab2a100fdf
 showMenu();
