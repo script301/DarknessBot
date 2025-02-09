@@ -1,5 +1,5 @@
-import readline from 'readline';
-import chalk from 'chalk';
+const readline = require('readline');
+const chalk = require('chalk');
 
 const rl = readline.createInterface({
     input: process.stdin,
