@@ -1,16 +1,21 @@
 // bot.js
 const mineflayer = require('mineflayer');
-const config = require('./config');
+const { config, updateServerConfig } = require('./config');
 const { functions, sleepAtNightFunction, attackMobsFunction, eatFoodFunction } = require('./functions');
 
+// Função para criar o bot com as configurações
+function createBot() {
+  return mineflayer.createBot({
+    host: config.server.host,
+    port: config.server.port,
+    username: 'Bot',
+    version: config.server.version,
+    auth: 'offline',
+  });
+}
+
 // Criar o bot com base nas configurações
-const bot = mineflayer.createBot({
-  host: config.server.host,
-  port: config.server.port,
-  username: 'Bot',
-  version: config.server.version,
-  auth: 'offline',
-});
+let bot = createBot();
 
 // Evento de inicialização do bot
 bot.on('spawn', () => {
@@ -31,6 +36,7 @@ function showMenu() {
   console.log('1. Ativar/Desativar Dormir à Noite');
   console.log('2. Ativar/Desativar Atacar Mobs');
   console.log('3. Ativar/Desativar Comer Alimentos');
+  console.log('4. Editar Configurações do Servidor');
   console.log('0. Sair');
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
@@ -54,6 +60,9 @@ function handleMenuChoice(choice) {
       functions.eatFood = !functions.eatFood;
       console.log(`Comer alimentos ${functions.eatFood ? 'ativado' : 'desativado'}`);
       break;
+    case '4':
+      editServerConfig();
+      break;
     case '0':
       console.log('Saindo...');
       process.exit();
@@ -63,6 +72,33 @@ function handleMenuChoice(choice) {
   }
 
   showMenu();  // Exibir novamente o menu após a escolha
+}
+
+// Função para editar as configurações do servidor pelo console
+function editServerConfig() {
+  console.log('\n--- Editar Configurações do Servidor ---');
+  console.log('Atual Configuração:');
+  console.log(`IP: ${config.server.host}, Porta: ${config.server.port}, Versão: ${config.server.version}`);
+
+  console.log('Digite o novo IP (deixe em branco para manter):');
+  process.stdin.once('data', (newHost) => {
+    newHost = newHost.trim();
+    console.log('Digite a nova porta (deixe em branco para manter):');
+    process.stdin.once('data', (newPort) => {
+      newPort = newPort.trim();
+      console.log('Digite a nova versão (deixe em branco para manter):');
+      process.stdin.once('data', (newVersion) => {
+        newVersion = newVersion.trim();
+
+        // Atualizar as configurações com os novos valores (se houver)
+        updateServerConfig(newHost || undefined, newPort || undefined, newVersion || undefined);
+
+        // Recriar o bot com as novas configurações
+        bot.quit();  // Desconectar o bot antigo
+        bot = createBot();  // Criar um novo bot com as configurações atualizadas
+      });
+    });
+  });
 }
 
 // Exibir o menu de configurações assim que o bot iniciar
