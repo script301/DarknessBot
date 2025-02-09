@@ -1,24 +1,34 @@
 // config.js
+const fs = require('fs');
+const path = require('path');
 
-let config = {
-    server: {
-      host: 'localhost',  // IP do servidor
-      port: 25565,        // Porta do servidor (padrão 25565)
-      version: '1.19.4',  // Versão do Minecraft (substituir por uma versão específica)
-    }
-  };
+const configFilePath = path.join(__dirname, 'data.json');
+
+// Função para ler as configurações do arquivo JSON
+function getConfig() {
+  try {
+    const rawData = fs.readFileSync(configFilePath);
+    return JSON.parse(rawData);
+  } catch (err) {
+    console.error('Erro ao ler o arquivo de configuração:', err);
+    return null;
+  }
+}
+
+// Função para atualizar as configurações do arquivo JSON
+function updateConfig(newHost, newPort, newVersion) {
+  const config = getConfig();
   
-  // Função para alterar as configurações de servidor
-  function updateServerConfig(newHost, newPort, newVersion) {
+  if (config) {
     if (newHost) config.server.host = newHost;
     if (newPort) config.server.port = newPort;
     if (newVersion) config.server.version = newVersion;
-  
-    console.log(`Configurações do servidor atualizadas: 
-      IP: ${config.server.host}, 
-      Porta: ${config.server.port}, 
-      Versão: ${config.server.version}`);
+
+    fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
   }
-  
-  module.exports = { config, updateServerConfig };
-  
+}
+
+module.exports = {
+  getConfig,
+  updateConfig
+};

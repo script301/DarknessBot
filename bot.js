@@ -1,10 +1,15 @@
 // bot.js
 const mineflayer = require('mineflayer');
-const { config, updateServerConfig } = require('./config');
+const { getConfig, updateConfig } = require('./config');
 const { functions, sleepAtNightFunction, attackMobsFunction, eatFoodFunction } = require('./functions');
+
+// Variável global para o bot
+let bot;
 
 // Função para criar o bot com as configurações
 function createBot() {
+  const config = getConfig();
+  
   return mineflayer.createBot({
     host: config.server.host,
     port: config.server.port,
@@ -16,6 +21,11 @@ function createBot() {
 
 // Função para iniciar o bot
 function startBot() {
+  if (bot) {
+    bot.quit(); // Desconectar o bot antigo
+    console.log('Bot desconectado...');
+  }
+
   bot = createBot();
 
   // Evento de inicialização do bot
@@ -114,6 +124,7 @@ function handleFunctionChoice(choice) {
 // Função para editar as configurações do servidor pelo console
 function editServerConfig() {
   console.clear();
+  const config = getConfig();
   console.log('--- Editar Configurações do Servidor ---');
   console.log('Configuração Atual:');
   console.log(`IP: ${config.server.host}, Porta: ${config.server.port}, Versão: ${config.server.version}`);
@@ -129,10 +140,9 @@ function editServerConfig() {
         newVersion = newVersion.trim();
 
         // Atualizar as configurações com os novos valores (se houver)
-        updateServerConfig(newHost || undefined, newPort || undefined, newVersion || undefined);
+        updateConfig(newHost || undefined, newPort || undefined, newVersion || undefined);
 
         // Recriar o bot com as novas configurações
-        bot.quit();  // Desconectar o bot antigo
         startBot();  // Criar um novo bot com as configurações atualizadas
       });
     });
