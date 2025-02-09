@@ -1,24 +1,61 @@
-const mineflayer = require('mineflayer');
+import readline from 'readline';
+import chalk from 'chalk';
 
-const bot = mineflayer.createBot({
-    host: 'localhost', // Substitua pelo IP do servidor
-    port: 25565,       // Porta do servidor
-    username: 'Darkness', // Nome do bot
-    version: false,    // Versão automática do servidor
-    auth: 'offline'    // Modo offline
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
 });
 
-bot.once('spawn', () => {
-    console.log('Bot conectado ao servidor!');
-});
+const config = {
+    serverSettings: {
+        ip: 'localhost',
+        port: 25565,
+        username: 'DarknessBot'
+    }
+};
 
-bot.on('end', (reason) => {
-    console.log(`Bot desconectado: ${reason}`);
-    setTimeout(() => {
-        bot.connect(); // Reconectar automaticamente
-    }, 5000);
-});
+function showMenu() {
+    console.clear();
+    console.log(chalk.blue('============================='));
+    console.log(chalk.green('        DARKNESS BOT         '));
+    console.log(chalk.blue('============================='));
+    console.log(chalk.yellow('1. Configuração do Servidor'));
+    console.log(chalk.yellow('2. Sair'));
+    console.log(chalk.blue('============================='));
+    rl.question(chalk.cyan('Escolha uma opção: '), (option) => {
+        handleMenuSelection(option);
+    });
+}
 
-bot.on('error', (err) => {
-    console.error(`Erro: ${err}`);
-});
+function handleMenuSelection(option) {
+    switch (option) {
+        case '1':
+            configureServer();
+            break;
+        case '2':
+            console.log(chalk.red('Saindo...'));
+            rl.close();
+            break;
+        default:
+            console.log(chalk.red('Opção inválida!'));
+            setTimeout(showMenu, 1000);
+    }
+}
+
+function configureServer() {
+    console.clear();
+    console.log(chalk.green('Configuração do Servidor'));
+    rl.question(chalk.cyan(`IP Atual [${config.serverSettings.ip}]: `), (ip) => {
+        if (ip) config.serverSettings.ip = ip;
+        rl.question(chalk.cyan(`Porta Atual [${config.serverSettings.port}]: `), (port) => {
+            if (port) config.serverSettings.port = parseInt(port);
+            rl.question(chalk.cyan(`Nome de Usuário [${config.serverSettings.username}]: `), (username) => {
+                if (username) config.serverSettings.username = username;
+                console.log(chalk.green('Configuração salva!'));
+                setTimeout(showMenu, 1000);
+            });
+        });
+    });
+}
+
+showMenu();
