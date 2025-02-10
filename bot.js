@@ -75,3 +75,6 @@ function logBotInfo() {
 }
 
 module.exports = { startBot };
+
+console.log("🚀 Bot.js foi carregado com sucesso.");
+startBot(); // Inicia o bot automaticamente para teste
