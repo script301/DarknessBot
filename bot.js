@@ -37,6 +37,18 @@ function startBot() {
     });
     
     bot.on('physicsTick', attackMobs);
+    
+    bot.on('spawn', () => {
+        console.log('Bot conectado e pronto!');
+    });
+    
+    bot.on('error', (err) => {
+        console.error('Erro no bot:', err);
+    });
+    
+    bot.on('end', () => {
+        console.log('Bot desconectado!');
+    });
 }
 
 function updateLog() {
