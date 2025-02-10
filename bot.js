@@ -5,17 +5,22 @@ const { attackMobsFunction } = require('./functions');
 let bot = null;
 
 function createBot() {
-  console.log("🛠 Criando bot..."); // Adicionado para depuração
-  const config = getConfig();
-  console.log(`🔗 Conectando ao servidor ${config.server.host}:${config.server.port}, versão ${config.server.version}`);
+  console.log("🛠 Criando bot...");
+  try {
+    const config = getConfig();
+    console.log(`🔗 Conectando ao servidor ${config.server.host}:${config.server.port}, versão ${config.server.version}`);
 
-  return mineflayer.createBot({
-    host: config.server.host,
-    port: config.server.port,
-    username: config.bot.name,
-    version: config.server.version,
-    auth: 'offline',
-  });
+    return mineflayer.createBot({
+      host: config.server.host,
+      port: config.server.port,
+      username: config.bot.name,
+      version: config.server.version,
+      auth: 'offline',
+    });
+  } catch (error) {
+    console.log("❌ Erro ao criar o bot:", error.message);
+    return null;
+  }
 }
 
 function startBot() {
@@ -27,6 +32,11 @@ function startBot() {
   }
 
   bot = createBot();
+
+  if (!bot) {
+    console.log("⚠️ O bot não pôde ser criado.");
+    return;
+  }
 
   bot.on('spawn', () => {
     console.log(`✅ Bot ${bot.username} entrou no servidor!`);
