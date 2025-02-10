@@ -1,5 +1,5 @@
 const readline = require('readline');
-const { startBot } = require('./bot');  // Agora importado corretamente
+const { startBot } = require('./bot');
 const { getConfig, updateConfig } = require('./config');
 
 const rl = readline.createInterface({
@@ -18,8 +18,9 @@ function showMenu() {
   rl.question("Escolha uma opção: ", (choice) => {
     switch (choice) {
       case '1':
-        console.log("Iniciando o bot...");
-        startBot();  // Agora reconhecido corretamente
+        console.log("🚀 Iniciando o bot...");
+        startBot();
+        setTimeout(showMenu, 5000); // Aguarde 5 segundos antes de retornar ao menu
         break;
       case '2':
         configureServer();
@@ -28,38 +29,12 @@ function showMenu() {
         configureBot();
         break;
       case '4':
-        console.log("Saindo...");
+        console.log("👋 Saindo...");
         process.exit(0);
       default:
-        console.log("Opção inválida.");
+        console.log("⚠️ Opção inválida.");
         setTimeout(showMenu, 2000);
     }
-  });
-}
-
-function configureServer() {
-  console.clear();
-  console.log("=== Configuração do Servidor ===");
-
-  rl.question("IP do servidor: ", (ip) => {
-    rl.question("Porta do servidor: ", (port) => {
-      rl.question("Versão do Minecraft: ", (version) => {
-        updateConfig('server', { host: ip, port: parseInt(port), version });
-        console.log("Configuração do servidor salva!");
-        setTimeout(showMenu, 2000);
-      });
-    });
-  });
-}
-
-function configureBot() {
-  console.clear();
-  console.log("=== Configuração do Bot ===");
-
-  rl.question("Nome do Bot: ", (name) => {
-    updateConfig('bot', { name });
-    console.log("Nome do bot atualizado!");
-    setTimeout(showMenu, 2000);
   });
 }
 
