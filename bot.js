@@ -38,6 +38,12 @@ function startBot() {
     return;
   }
 
+  bot.on('entityAttach', (entity, vehicle) => {
+    if (!vehicle) return; // Se não houver veículo, sai da função
+    if (!vehicle.passengers) vehicle.passengers = []; // Garante que a propriedade existe
+    vehicle.passengers.push(entity);
+});
+
   bot.on('spawn', () => {
     console.log(`✅ Bot ${bot.username} entrou no servidor!`);
     setInterval(logBotInfo, 3000);
