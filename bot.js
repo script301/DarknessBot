@@ -1,86 +1,94 @@
 const mineflayer = require('mineflayer');
-const { getConfig } = require('./config');
-const { attackMobsFunction } = require('./functions');
+const { pathfinder, Movements, goals } = require('mineflayer-pathfinder');
+const config = require('./config.json');
 
-let bot = null;
-
-function createBot() {
-  console.log("🛠 Criando bot...");
-  try {
-    const config = getConfig();
-    console.log(`🔗 Conectando ao servidor ${config.server.host}:${config.server.port}, versão ${config.server.version}`);
-
-    return mineflayer.createBot({
-      host: config.server.host,
-      port: config.server.port,
-      username: config.bot.name,
-      version: config.server.version,
-      auth: 'offline',
-    });
-  } catch (error) {
-    console.log("❌ Erro ao criar o bot:", error.message);
-    return null;
-  }
-}
-
+let bot;
 function startBot() {
-  console.log("🚀 Iniciando o bot...");
+    bot = mineflayer.createBot({
+        host: config.server.ip,
+        port: config.server.port,
+        username: config.bot.nickname || 'DarknessBot',
+        version: config.server.version
+    });
 
-  if (bot) {
-    console.log("🔴 Desconectando bot antigo...");
-    bot.quit();
-  }
+    bot.loadPlugin(pathfinder);
 
-  bot = createBot();
+    bot.once('spawn', () => {
+        console.clear();
+        console.log(`\n🚀 ${bot.username} entrou no servidor!`);
+        updateLog();
+        equipArmor();
+        moveAround();
+    });
 
-  if (!bot) {
-    console.log("⚠️ O bot não pôde ser criado.");
-    return;
-  }
-
-  bot.on('entityAttach', (entity, vehicle) => {
-    if (!vehicle) return; // Se não houver veículo, sai da função
-    if (!vehicle.passengers) vehicle.passengers = []; // Garante que a propriedade existe
-    vehicle.passengers.push(entity);
-});
-
-  bot.on('spawn', () => {
-    console.log(`✅ Bot ${bot.username} entrou no servidor!`);
-    setInterval(logBotInfo, 3000);
-    attackMobsFunction(bot);
-  });
-
-  bot.on('end', () => {
-    console.log("⚠️ Bot desconectado. Use o menu para reiniciar.");
-  });
-
-  bot.on('error', (err) => {
-    console.log("❌ Erro no bot:", err.message);
-  });
+    bot.on('health', updateLog);
+    bot.on('time', () => {
+        updateLog();
+        if (bot.time.isNight) {
+            sleepAtNight();
+        }
+    });
+    
+    bot.on('physicsTick', attackMobs);
 }
 
-function logBotInfo() {
-  console.clear();
-  if (!bot || !bot.entity) {
-    console.log("⏳ Bot ainda não conectado...");
-    return;
-  }
+function updateLog() {
+    console.clear();
+    console.log(`\n=== ${bot.username} Status ===`);
+    console.log(`❤️ Vida: ${bot.health}`);
+    console.log(`🍗 Fome: ${bot.food}`);
+    console.log(`📍 Coordenadas: X: ${bot.entity.position.x.toFixed(1)}, Y: ${bot.entity.position.y.toFixed(1)}, Z: ${bot.entity.position.z.toFixed(1)}`);
+    console.log(`⚔️ Em combate: ${bot.target ? 'Sim' : 'Não'}`);
+    console.log(`⏳ Hora do jogo: ${bot.time.age}`);
+    console.log(`📡 Ping: ${bot.player.ping}ms`);
+    console.log(`👥 Jogadores online: ${Object.keys(bot.players).length}`);
+    console.log(`🛡️ Armadura: ${getArmor()}`);
+    console.log(`🖐️ Mão Principal: ${bot.heldItem ? bot.heldItem.name : 'Vazia'}`);
+}
 
-  const health = bot.health;
-  const hunger = bot.food;
-  const coords = bot.entity.position;
-  const inCombat = bot.entity.target ? "Sim" : "Não";
-  const time = bot.time.timeOfDay;
+function equipArmor() {
+    const armorItems = bot.inventory.items().filter(item =>
+        item.name.includes('helmet') ||
+        item.name.includes('chestplate') ||
+        item.name.includes('leggings') ||
+        item.name.includes('boots')
+    );
+    armorItems.forEach(item => {
+        bot.equip(item, 'torso', () => {});
+    });
+}
 
-  console.log(`[${bot.username}]`);
-  console.log(`❤️ Saúde: ${health}/20`);
-  console.log(`🍗 Fome: ${hunger}/20`);
-  console.log(`📍 Coordenadas: X:${coords.x.toFixed(1)}, Y:${coords.y.toFixed(1)}, Z:${coords.z.toFixed(1)}`);
-  console.log(`⚔️ Em combate: ${inCombat}`);
-  console.log(`🕒 Hora do jogo: ${time}`);
+function attackMobs() {
+    const mob = bot.nearestEntity(entity => entity.type === 'mob' && entity.position.distanceTo(bot.entity.position) < 5);
+    if (mob) {
+        bot.attack(mob);
+        setTimeout(() => bot.attack(mob), 500);
+    }
+}
+
+function sleepAtNight() {
+    const bed = bot.findBlock({
+        matching: block => bot.isABed(block),
+        maxDistance: 5
+    });
+    if (bed) {
+        bot.sleep(bed, () => {
+            console.log('🛏️ O bot foi dormir...');
+        });
+    }
+}
+
+function moveAround() {
+    setInterval(() => {
+        const x = bot.entity.position.x + (Math.random() * 6 - 3);
+        const z = bot.entity.position.z + (Math.random() * 6 - 3);
+        const goal = new goals.GoalBlock(x, bot.entity.position.y, z);
+        bot.pathfinder.setGoal(goal);
+    }, 10000);
+}
+
+function getArmor() {
+    return Object.values(bot.inventory.slots).filter(item => item && (item.name.includes('helmet') || item.name.includes('chestplate') || item.name.includes('leggings') || item.name.includes('boots'))).map(item => item.name).join(', ') || 'Nenhuma';
 }
 
 module.exports = { startBot };
-
-console.log("🚀 Bot.js foi carregado com sucesso.");
-startBot(); // Inicia o bot automaticamente para teste
