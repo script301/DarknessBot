@@ -79,14 +79,16 @@ function startBot() {
 
 // Equipar armadura automaticamente
 function equipArmor() {
-  const armorItems = ['helmet', 'chestplate', 'leggings', 'boots'];
-  armorItems.forEach((armorSlot) => {
-    const item = bot.inventory.findInventoryItem(Item[armorSlot], null);
-    if (item) {
-      bot.equip(item, armorSlot);
-      console.log(`Equipado: ${armorSlot}`);
-    }
-  });
+  if (bot.inventory) {
+    const armorItems = ['helmet', 'chestplate', 'leggings', 'boots'];
+    armorItems.forEach((armorSlot) => {
+      const item = bot.inventory.findInventoryItem(Item[armorSlot], null);
+      if (item) {
+        bot.equip(item, armorSlot);
+        console.log(`Equipado: ${armorSlot}`);
+      }
+    });
+  }
 }
 
 // Atacar mobs hostis próximos
@@ -107,10 +109,13 @@ function showBotStatus() {
 // Função para pegar o status da armadura
 function getArmorStatus() {
   const armorStatus = [];
-  ['helmet', 'chestplate', 'leggings', 'boots'].forEach((slot) => {
-    const item = bot.inventory.slots[bot.registry.itemsByName[slot]];
+  const armorSlots = ['helmet', 'chestplate', 'leggings', 'boots'];
+  
+  armorSlots.forEach((slot) => {
+    const item = bot.inventory ? bot.inventory.slots[bot.registry.itemsByName[slot]] : null;
     armorStatus.push(item ? item.name : 'Nada');
   });
+
   return armorStatus.join(', ');
 }
 
@@ -124,8 +129,7 @@ function showMenu() {
   console.log('=== DarknessBot Menu ===');
   console.log('1. Iniciar Bot');
   console.log('2. Exibir Status');
-  console.log('3. Editar Configurações');
-  console.log('4. Sair');
+  console.log('3. Sair');
   rl.question('Escolha uma opção: ', (option) => {
     switch (option) {
       case '1':
@@ -135,9 +139,6 @@ function showMenu() {
         showBotStatus();
         break;
       case '3':
-        editConfig();
-        break;
-      case '4':
         rl.close();
         bot.quit();
         break;
