@@ -1,23 +1,38 @@
 const mineflayer = require('mineflayer');
 const { pathfinder, Movements } = require('mineflayer-pathfinder');
-const { Vec3 } = require('vec3');
 const fs = require('fs');
 const readline = require('readline');
 const { Item } = require('minecraft-data');
 
-// Configurações do bot
-const botConfig = {
-  host: 'localhost', // Altere para o seu servidor, se necessário
-  port: 25565,       // Altere para a porta do seu servidor, se necessário
-  username: 'DarknessBot', // Nome do bot
-  version: '1.16.5', // Versão do Minecraft (ajuste conforme seu servidor)
-};
+// Função para ler o arquivo de configuração data.json
+function readConfig() {
+  try {
+    const data = fs.readFileSync('data.json');
+    return JSON.parse(data);
+  } catch (error) {
+    console.log('Arquivo de configuração não encontrado ou inválido, criando um novo...');
+    return {
+      host: 'localhost',
+      port: 25565,
+      username: 'DarknessBot',
+      version: '1.16.5',
+    };
+  }
+}
+
+// Função para escrever no arquivo data.json
+function writeConfig(config) {
+  fs.writeFileSync('data.json', JSON.stringify(config, null, 2));
+}
+
+// Configurações do bot - Carregadas do arquivo data.json
+let config = readConfig();
 
 let bot;
 
 // Função para criar e inicializar o bot
 function startBot() {
-  bot = mineflayer.createBot(botConfig);
+  bot = mineflayer.createBot(config);
 
   bot.loadPlugin(pathfinder);
 
@@ -109,7 +124,8 @@ function showMenu() {
   console.log('=== DarknessBot Menu ===');
   console.log('1. Iniciar Bot');
   console.log('2. Exibir Status');
-  console.log('3. Sair');
+  console.log('3. Editar Configurações');
+  console.log('4. Sair');
   rl.question('Escolha uma opção: ', (option) => {
     switch (option) {
       case '1':
@@ -119,6 +135,9 @@ function showMenu() {
         showBotStatus();
         break;
       case '3':
+        editConfig();
+        break;
+      case '4':
         rl.close();
         bot.quit();
         break;
@@ -129,4 +148,28 @@ function showMenu() {
   });
 }
 
+// Função para editar as configurações no arquivo data.json
+function editConfig() {
+  console.log('Editar Configurações');
+  rl.question('Digite o IP do servidor: ', (host) => {
+    rl.question('Digite a porta do servidor: ', (port) => {
+      rl.question('Digite o nome do bot: ', (username) => {
+        rl.question('Digite a versão do Minecraft: ', (version) => {
+          const newConfig = {
+            host: host,
+            port: parseInt(port),
+            username: username,
+            version: version,
+          };
+          writeConfig(newConfig);
+          config = newConfig; // Atualiza a configuração no código
+          console.log('Configurações atualizadas!');
+          showMenu(); // Retorna ao menu
+        });
+      });
+    });
+  });
+}
+
+// Iniciar menu ao iniciar o bot
 showMenu();
