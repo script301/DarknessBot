@@ -78,17 +78,23 @@ function startBot() {
 
 // Equipar armadura automaticamente
 function equipArmor() {
-  if (bot.inventory) {
-    const armorItems = ['helmet', 'chestplate', 'leggings', 'boots'];
-    armorItems.forEach((armorSlot) => {
-      const item = bot.inventory.findInventoryItem(bot.registry.itemsByName[armorSlot].id, null);
-      if (item) {
-        bot.equip(item, armorSlot);
-        console.log(`Equipado: ${armorSlot}`);
-      }
-    });
-  }
-}
+    if (bot.inventory) {
+      const armorItems = {
+        'helmet': bot.registry.itemsByName.helmet,
+        'chestplate': bot.registry.itemsByName.chestplate,
+        'leggings': bot.registry.itemsByName.leggings,
+        'boots': bot.registry.itemsByName.boots
+      };
+  
+      Object.keys(armorItems).forEach((armorSlot) => {
+        const item = bot.inventory.findInventoryItem(armorItems[armorSlot]?.id, null);
+        if (item) {
+          bot.equip(item, armorSlot);
+          console.log(`Equipado: ${armorSlot}`);
+        }
+      });
+    }
+  }  
 
 // Atacar mobs hostis próximos
 function attackNearbyMobs() {
