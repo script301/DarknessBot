@@ -2,6 +2,13 @@ const mineflayer = require('mineflayer');
 const { pathfinder, Movements, goals } = require('mineflayer-pathfinder');
 const config = require('./config.json');
 
+
+console.log('Iniciando o bot...');
+process.on('uncaughtException', (err) => {
+  console.error('Ocorreu um erro não tratado:', err);
+});
+
+
 let bot;
 function startBot() {
     bot = mineflayer.createBot({
