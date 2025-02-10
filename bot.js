@@ -1,7 +1,6 @@
 const mineflayer = require('mineflayer');
 const { getConfig } = require('./config');
 const { attackMobsFunction } = require('./functions');
-const { showMenu } = require('./menu');
 
 let bot = null;
 
@@ -32,17 +31,17 @@ function startBot() {
 
   bot.on('end', () => {
     console.log("Bot desconectado.");
-    setTimeout(showMenu, 2000);
   });
 
   bot.on('error', (err) => {
     console.log("Erro no bot:", err.message);
-    setTimeout(showMenu, 2000);
   });
 }
 
 function logBotInfo() {
   console.clear();
+  if (!bot || !bot.entity) return;
+
   const health = bot.health;
   const hunger = bot.food;
   const coords = bot.entity.position;
@@ -52,9 +51,9 @@ function logBotInfo() {
   console.log(`[${bot.username}]`);
   console.log(`Saúde: ${health}/20`);
   console.log(`Fome: ${hunger}/20`);
-  console.log(`Coordenadas: X: ${coords.x}, Y: ${coords.y}, Z: ${coords.z}`);
+  console.log(`Coordenadas: X: ${coords.x.toFixed(1)}, Y: ${coords.y.toFixed(1)}, Z: ${coords.z.toFixed(1)}`);
   console.log(`Em combate: ${inCombat}`);
   console.log(`Hora do jogo: ${time}`);
 }
 
-showMenu();
+module.exports = { startBot };

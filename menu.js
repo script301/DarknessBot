@@ -1,5 +1,5 @@
 const readline = require('readline');
-const { startBot } = require('./bot');
+const { startBot } = require('./bot');  // Agora importado corretamente
 const { getConfig, updateConfig } = require('./config');
 
 const rl = readline.createInterface({
@@ -19,7 +19,7 @@ function showMenu() {
     switch (choice) {
       case '1':
         console.log("Iniciando o bot...");
-        startBot();
+        startBot();  // Agora reconhecido corretamente
         break;
       case '2':
         configureServer();
@@ -63,4 +63,4 @@ function configureBot() {
   });
 }
 
-module.exports = { showMenu };
+showMenu();
