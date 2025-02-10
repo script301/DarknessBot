@@ -2,7 +2,6 @@ const mineflayer = require('mineflayer');
 const { pathfinder, Movements } = require('mineflayer-pathfinder');
 const fs = require('fs');
 const readline = require('readline');
-const { Item } = require('minecraft-data');
 
 // Função para ler o arquivo de configuração data.json
 function readConfig() {
@@ -82,7 +81,7 @@ function equipArmor() {
   if (bot.inventory) {
     const armorItems = ['helmet', 'chestplate', 'leggings', 'boots'];
     armorItems.forEach((armorSlot) => {
-      const item = bot.inventory.findInventoryItem(Item[armorSlot], null);
+      const item = bot.inventory.findInventoryItem(bot.registry.itemsByName[armorSlot].id, null);
       if (item) {
         bot.equip(item, armorSlot);
         console.log(`Equipado: ${armorSlot}`);
@@ -116,7 +115,7 @@ function getArmorStatus() {
   const armorSlots = ['helmet', 'chestplate', 'leggings', 'boots'];
   
   armorSlots.forEach((slot) => {
-    const item = bot.inventory ? bot.inventory.slots[bot.registry.itemsByName[slot]] : null;
+    const item = bot.inventory ? bot.inventory.slots[bot.registry.itemsByName[slot].id] : null;
     armorStatus.push(item ? item.name : 'Nada');
   });
 
