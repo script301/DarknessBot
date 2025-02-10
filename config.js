@@ -1,34 +1,30 @@
-// config.js
 const fs = require('fs');
-const path = require('path');
 
-const configFilePath = path.join(__dirname, 'data.json');
+const configFile = 'config.json';
 
-// Função para ler as configurações do arquivo JSON
-function getConfig() {
+function loadConfig() {
   try {
-    const rawData = fs.readFileSync(configFilePath);
-    return JSON.parse(rawData);
-  } catch (err) {
-    console.error('Erro ao ler o arquivo de configuração:', err);
-    return null;
+    return JSON.parse(fs.readFileSync(configFile, 'utf8'));
+  } catch (error) {
+    return {
+      server: { host: "scriptnza.falixsrv.me", port: 25565, version: "1.21.4" },
+      bot: { name: "DarknessBot" }
+    };
   }
 }
 
-// Função para atualizar as configurações do arquivo JSON
-function updateConfig(newHost, newPort, newVersion) {
-  const config = getConfig();
-  
-  if (config) {
-    if (newHost) config.server.host = newHost;
-    if (newPort) config.server.port = newPort;
-    if (newVersion) config.server.version = newVersion;
-
-    fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
-  }
+function saveConfig(config) {
+  fs.writeFileSync(configFile, JSON.stringify(config, null, 2));
 }
 
-module.exports = {
-  getConfig,
-  updateConfig
-};
+function getConfig() {
+  return loadConfig();
+}
+
+function updateConfig(section, newData) {
+  const config = loadConfig();
+  config[section] = { ...config[section], ...newData };
+  saveConfig(config);
+}
+
+module.exports = { getConfig, updateConfig };

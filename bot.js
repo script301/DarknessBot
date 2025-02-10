@@ -1,15 +1,12 @@
-// bot.js
 const mineflayer = require('mineflayer');
-const { getConfig, updateConfig } = require('./config');
+const { getConfig } = require('./config');
 const { attackMobsFunction } = require('./functions');
+const { showMenu } = require('./menu');
 
-// Variável global para o bot
-let bot;
+let bot = null;
 
-// Função para criar o bot com as configurações
 function createBot() {
   const config = getConfig();
-  
   return mineflayer.createBot({
     host: config.server.host,
     port: config.server.port,
@@ -19,42 +16,45 @@ function createBot() {
   });
 }
 
-// Função para iniciar o bot
 function startBot() {
   if (bot) {
-    bot.quit(); // Desconectar o bot antigo
-    console.log('Bot desconectado...');
+    bot.quit();
+    console.log("Desconectando o bot anterior...");
   }
 
   bot = createBot();
 
-  // Evento de inicialização do bot
   bot.on('spawn', () => {
-    console.log(`Bot ${bot.username} iniciou no servidor!`);
-    setInterval(logBotInfo, 3000); // Log a cada 3 segundos
-
-    // Iniciar funções do bot
+    console.log(`Bot ${bot.username} entrou no servidor.`);
+    setInterval(logBotInfo, 3000);
     attackMobsFunction(bot);
+  });
+
+  bot.on('end', () => {
+    console.log("Bot desconectado.");
+    setTimeout(showMenu, 2000);
+  });
+
+  bot.on('error', (err) => {
+    console.log("Erro no bot:", err.message);
+    setTimeout(showMenu, 2000);
   });
 }
 
-// Função para exibir as informações do bot no console
 function logBotInfo() {
   console.clear();
-
   const health = bot.health;
   const hunger = bot.food;
-  const coordinates = bot.entity.position;
-  const isFighting = bot.entity.target ? 'Sim' : 'Não';
-  const currentTime = bot.time.timeOfDay;
+  const coords = bot.entity.position;
+  const inCombat = bot.entity.target ? "Sim" : "Não";
+  const time = bot.time.timeOfDay;
 
   console.log(`[${bot.username}]`);
-  console.log(`Saúde: ${health}/${bot.maxHealth}`);
+  console.log(`Saúde: ${health}/20`);
   console.log(`Fome: ${hunger}/20`);
-  console.log(`Coordenadas: X: ${coordinates.x}, Y: ${coordinates.y}, Z: ${coordinates.z}`);
-  console.log(`Em combate: ${isFighting}`);
-  console.log(`Hora do servidor: ${currentTime}`);
+  console.log(`Coordenadas: X: ${coords.x}, Y: ${coords.y}, Z: ${coords.z}`);
+  console.log(`Em combate: ${inCombat}`);
+  console.log(`Hora do jogo: ${time}`);
 }
 
-// Exibir o menu principal assim que o bot iniciar
 showMenu();
