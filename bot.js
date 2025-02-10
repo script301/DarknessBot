@@ -102,8 +102,12 @@ function attackNearbyMobs() {
 
 // Exibir informações sobre o bot
 function showBotStatus() {
-  console.log(`Armadura: ${getArmorStatus()}`);
-  console.log(`Item na mão: ${bot.inventory.slots[36] ? bot.inventory.slots[36].name : 'Nada'}`);
+  if (bot.inventory) { // Verifica se o inventário está carregado
+    console.log(`Armadura: ${getArmorStatus()}`);
+    console.log(`Item na mão: ${bot.inventory.slots[36] ? bot.inventory.slots[36].name : 'Nada'}`);
+  } else {
+    console.log('Inventário não carregado ainda...');
+  }
 }
 
 // Função para pegar o status da armadura
@@ -129,7 +133,8 @@ function showMenu() {
   console.log('=== DarknessBot Menu ===');
   console.log('1. Iniciar Bot');
   console.log('2. Exibir Status');
-  console.log('3. Sair');
+  console.log('3. Editar Configurações');
+  console.log('4. Sair');
   rl.question('Escolha uma opção: ', (option) => {
     switch (option) {
       case '1':
@@ -139,6 +144,9 @@ function showMenu() {
         showBotStatus();
         break;
       case '3':
+        editConfig();
+        break;
+      case '4':
         rl.close();
         bot.quit();
         break;
