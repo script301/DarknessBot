@@ -49,7 +49,7 @@ function startBot() {
     bot.timeToAttack = 500; // Em milissegundos (meio segundo)
 
     // Definir comportamento de ataque
-    bot.on('physicTick', () => {
+    bot.on('physicsTick', () => {
       attackNearbyMobs();
     });
 
